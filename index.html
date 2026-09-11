@@ -879,7 +879,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Aadhar Number</label>
-                <input type="text" class="form-control" id="passportAadhar" placeholder="1234 5678 9012" maxlength="14">
+                <input type="text" class="form-control" id="passportAadhar" placeholder="1234 5678 9012" maxlength="14" data-aadhaar-auto="true" inputmode="numeric">
               </div>
             </div>
             <div class="row mb-3">
@@ -950,7 +950,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">PF Number (Max 12 digits)</label>
-                <input type="text" class="form-control" id="epfoPFNo" placeholder="PF Number" maxlength="12" required>
+                <input type="text" class="form-control" id="epfoPFNo" placeholder="PF Number" maxlength="12" required data-pf-auto="true" inputmode="numeric" maxlength="12">
               </div>
             </div>
             <div class="row mb-3">
@@ -984,30 +984,33 @@
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Full Name</label>
-                <input type="text" class="form-control uppercase" id="aadhaarName" placeholder="CUSTOMER NAME" required>
+                <input type="text" class="form-control uppercase" id="aadhaarName" placeholder="CUSTOMER NAME" required data-aadhaar-auto="true" inputmode="numeric">
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Father/Husband Name</label>
-                <input type="text" class="form-control uppercase" id="aadhaarFatherName" placeholder="FATHER NAME">
+                <input type="text" class="form-control uppercase" id="aadhaarFatherName" placeholder="FATHER NAME" data-aadhaar-auto="true" inputmode="numeric">
               </div>
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Mobile Number (10 digits)</label>
-                <input type="tel" class="form-control" id="aadhaarMobile" placeholder="Mobile Number" maxlength="10" required>
+                <input type="tel" class="form-control" id="aadhaarMobile" placeholder="Mobile Number" maxlength="10" required data-aadhaar-auto="true" inputmode="numeric">
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Aadhar Number</label>
-                <input type="text" class="form-control" id="aadhaarNumber" placeholder="1234 5678 9012" maxlength="14" required>
+                <input type="text" class="form-control" id="aadhaarNumber"
+                       placeholder="Enter 12 digit Aadhaar Number"
+                       maxlength="12" inputmode="numeric" autocomplete="off" required data-aadhaar-auto="true" inputmode="numeric">
+                <div id="aadhaarValidationMessage" class="form-text"></div>
               </div>
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="aadhaarPassword" placeholder="Enter password">
+                <input type="text" class="form-control" id="aadhaarPassword" placeholder="Enter password" data-aadhaar-auto="true" inputmode="numeric">
               </div>
             </div>
-            <input type="hidden" id="aadhaarId">
+            <input type="hidden" id="aadhaarId" data-aadhaar-auto="true" inputmode="numeric">
           </form>
         </div>
         <div class="modal-footer">
@@ -1241,7 +1244,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Aadhar Number</label>
-                <input type="text" class="form-control" id="accountAadhar" placeholder="1234 5678 9012" maxlength="14">
+                <input type="text" class="form-control" id="accountAadhar" placeholder="1234 5678 9012" maxlength="14" data-aadhaar-auto="true" inputmode="numeric">
               </div>
             </div>
             <div class="row mb-3">
@@ -3318,5 +3321,149 @@
       setServiceFilter('all');
     });
   </script>
+
+<!-- Aadhaar automatic validation: format + Verhoeff checksum -->
+<script>
+(function () {
+  function verhoeffValid(num) {
+    var d = [
+      [0,1,2,3,4,5,6,7,8,9],[1,2,3,4,0,6,7,8,9,5],
+      [2,3,4,0,1,7,8,9,5,6],[3,4,0,1,2,8,9,5,6,7],
+      [4,0,1,2,3,9,5,6,7,8],[5,9,8,7,6,0,4,3,2,1],
+      [6,5,9,8,7,1,0,4,3,2],[7,6,5,9,8,2,1,0,4,3],
+      [8,7,6,5,9,3,2,1,0,4],[9,8,7,6,5,4,3,2,1,0]
+    ];
+    var p = [
+      [0,1,2,3,4,5,6,7,8,9],[1,5,7,6,2,8,3,0,9,4],
+      [5,8,0,3,7,9,6,1,4,2],[8,9,1,6,0,4,3,5,2,7],
+      [9,4,5,3,1,2,6,8,7,0],[4,2,8,6,5,7,3,9,0,1],
+      [2,7,9,3,8,0,6,4,1,5],[7,0,4,6,9,1,3,2,5,8]
+    ];
+    if (!/^\d{12}$/.test(num)) return false;
+    var c = 0;
+    for (var i = 0; i < num.length; i++) {
+      c = d[c][p[i % 8][parseInt(num.charAt(num.length - 1 - i), 10)]];
+    }
+    return c === 0;
+  }
+
+  function setupAadhaarValidation() {
+    var input = document.getElementById('aadhaarNumber');
+    var msg = document.getElementById('aadhaarValidationMessage');
+    if (!input || !msg || input.dataset.autoAadhaar === 'ready') return;
+    input.dataset.autoAadhaar = 'ready';
+
+    input.addEventListener('input', function () {
+      var value = input.value.replace(/\D/g, '').slice(0, 12);
+      input.value = value;
+      input.classList.remove('is-valid', 'is-invalid');
+
+      if (value.length === 0) {
+        msg.textContent = '';
+        return;
+      }
+      if (value.length < 12) {
+        msg.textContent = 'Enter 12 digits to validate format and checksum.';
+        msg.className = 'form-text text-muted';
+        return;
+      }
+      if (verhoeffValid(value)) {
+        msg.textContent = '✓ Aadhaar format and checksum valid.';
+        msg.className = 'form-text text-success';
+        input.classList.add('is-valid');
+      } else {
+        msg.textContent = '✗ Invalid Aadhaar checksum.';
+        msg.className = 'form-text text-danger';
+        input.classList.add('is-invalid');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupAadhaarValidation);
+  } else {
+    setupAadhaarValidation();
+  }
+})();
+</script>
+
+
+<script id="generic-pnb-aadhaar-auto-validation">
+(function(){
+  var d=[[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,0,6,7,8,9,5],[2,3,4,0,1,7,8,9,5,6],[3,4,0,1,2,8,9,5,6,7],[4,0,1,2,3,9,5,6,7,8],[5,9,8,7,6,0,4,3,2,1],[6,5,9,8,7,1,0,4,3,2],[7,6,5,9,8,2,1,0,4,3],[8,7,6,5,9,3,2,1,0,4],[9,8,7,6,5,4,3,2,1,0]];
+  var p=[[0,1,2,3,4,5,6,7,8,9],[1,5,7,6,2,8,3,0,9,4],[5,8,0,3,7,9,6,1,4,2],[8,9,1,6,0,4,3,5,2,7],[9,4,5,3,1,2,6,8,7,0],[4,2,8,6,5,7,3,9,0,1],[2,7,9,3,8,0,6,4,1,5],[7,0,4,6,9,1,3,2,5,8]];
+  function valid(v){
+    if(!/^\d{12}$/.test(v)) return false;
+    var c=0;
+    for(var i=0;i<v.length;i++) c=d[c][p[i%8][Number(v.charAt(v.length-1-i))]];
+    return c===0;
+  }
+  function init(){
+    document.querySelectorAll('[data-aadhaar-auto="true"]').forEach(function(input){
+      if(input.dataset.aadhaarReady) return;
+      input.dataset.aadhaarReady="1";
+      input.setAttribute("maxlength","12");
+      var msg=document.createElement("div");
+      msg.className="form-text";
+      msg.style.marginTop="4px";
+      input.insertAdjacentElement("afterend",msg);
+      input.addEventListener("input",function(){
+        var v=input.value.replace(/\D/g,"").slice(0,12);
+        input.value=v;
+        input.classList.remove("is-valid","is-invalid");
+        if(!v){msg.textContent=""; return;}
+        if(v.length<12){msg.textContent="Enter 12 digits to validate format and checksum."; msg.className="form-text text-muted"; return;}
+        if(valid(v)){msg.textContent="✓ Aadhaar format and checksum valid."; msg.className="form-text text-success"; input.classList.add("is-valid");}
+        else {msg.textContent="✗ Invalid Aadhaar checksum."; msg.className="form-text text-danger"; input.classList.add("is-invalid");}
+      });
+    });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init); else init();
+})();
+</script>
+
+
+<script id="pf-number-auto-validation">
+(function(){
+  function initPFValidation(){
+    document.querySelectorAll('[data-pf-auto="true"]').forEach(function(input){
+      if(input.dataset.pfReady) return;
+      input.dataset.pfReady="1";
+
+      var msg=document.createElement("div");
+      msg.className="form-text";
+      msg.style.marginTop="4px";
+      input.insertAdjacentElement("afterend",msg);
+
+      input.addEventListener("input",function(){
+        var v=input.value.replace(/\D/g,"").slice(0,12);
+        input.value=v;
+        input.classList.remove("is-valid","is-invalid");
+
+        if(v.length===0){
+          msg.textContent="";
+          return;
+        }
+        if(v.length<12){
+          msg.textContent="Enter up to 12 digits.";
+          msg.className="form-text text-muted";
+          return;
+        }
+
+        msg.textContent="✓ PF Number format valid (12 digits).";
+        msg.className="form-text text-success";
+        input.classList.add("is-valid");
+      });
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",initPFValidation);
+  }else{
+    initPFValidation();
+  }
+})();
+</script>
+
 </body>
 </html>
