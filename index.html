@@ -154,6 +154,22 @@
       display: block;
     }
 
+    .service-card img {
+      width: 105px;
+      height: 105px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 8px;
+      border-radius: 8px;
+    }
+
+    /* All CSC service logos use the same large size */
+    .service-card img.aadhaar-logo {
+      width: 105px;
+      height: 105px;
+      margin-bottom: 2px;
+    }
+
     .service-card span {
       font-size: 0.9rem;
       font-weight: 600;
@@ -355,8 +371,30 @@
       box-shadow: 0 4px 8px rgba(138, 21, 56, 0.2);
     }
 
+    .filter-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .filter-badge .filter-logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      vertical-align: middle;
+      border-radius: 5px;
+      flex: 0 0 28px;
+    }
+
+    .filter-badge .filter-logo.aadhaar-filter-logo {
+      width: 42px;
+      height: 42px;
+      flex-basis: 42px;
+      margin: -7px 0;
+    }
+
     .filter-badge i {
-      margin-right: 8px;
+      margin-right: 0;
       font-size: 1rem;
     }
 
@@ -515,6 +553,17 @@
         font-size: 1.4rem;
       }
 
+      .service-card img {
+        width: 90px;
+        height: 90px;
+        margin-bottom: 6px;
+      }
+
+      .service-card img.aadhaar-logo {
+        width: 90px;
+        height: 90px;
+      }
+
       .service-card span {
         font-size: 0.7rem;
       }
@@ -594,6 +643,7 @@
             <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('esarvish')"><i class="fas fa-globe" style="color: #0891b2;"></i>eSarvish Applications</a></li>
             <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('license')"><i class="fas fa-id-card-alt" style="color: #16a34a;"></i>Driving License Applications</a></li>
             <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('pnb_account')"><i class="fas fa-university" style="color: #8A1538;"></i>PNB Account Customers</a></li>
+            <li><a class="dropdown-item service-menu-item" href="#" onclick="filterByService('upcl')"><i class="fas fa-bolt" style="color: #f59e0b;"></i>UPCL Customers</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><h6 class="dropdown-header">Data Management</h6></li>
             <li><a class="dropdown-item text-danger" href="#" id="bulkDeleteBtn"><i class="fas fa-trash-alt"></i>Bulk Delete</a></li>
@@ -609,6 +659,7 @@
   </nav>
 
   <div class="container py-4 main-container">
+    <div class="text-end mb-2"><span id="firebaseStatusBadge" class="badge bg-warning ms-2">● Connecting Firebase...</span></div>
     <!-- Alerts Container -->
     <div id="alertsContainer"></div>
 
@@ -667,6 +718,11 @@
         <div class="stat-label">PNB Account</div>
         <div class="stat-value" id="statPNBAccount">0</div>
       </div>
+      <div class="stat-card">
+        <span class="stat-icon"><i class="fas fa-bolt"></i></span>
+        <div class="stat-label">UPCL</div>
+        <div class="stat-value" id="statUPCL">0</div>
+      </div>
     </div>
 
     <!-- CSC Services Section -->
@@ -677,32 +733,36 @@
       <div class="card-body">
         <div class="services-wrapper">
           <div class="service-card" onclick="openPassportForm()">
-            <i class="fas fa-passport"></i>
+            <img src="https://iili.io/noWdm2p.jpg" alt="Passport Logo">
             <span>PASSPORT</span>
           </div>
           <div class="service-card" onclick="openEPFOForm()">
-            <i class="fas fa-file-invoice"></i>
+            <img src="https://iili.io/noW3uRI.jpg" alt="EPF Logo">
             <span>EPFO</span>
           </div>
           <div class="service-card" onclick="openAadhaarForm()">
-            <i class="fas fa-id-card"></i>
+            <img class="aadhaar-logo" src="https://iili.io/nYTM3S1.png" alt="Aadhaar Logo">
             <span>AADHAAR</span>
           </div>
           <div class="service-card" onclick="openPANForm()">
-            <i class="fas fa-credit-card"></i>
+            <img src="https://iili.io/noX3TpS.jpg" alt="PAN Card Logo">
             <span>PAN CARD</span>
           </div>
           <div class="service-card" onclick="openESarvishForm()">
-            <i class="fas fa-globe"></i>
+            <img src="https://iili.io/noWUHtn.jpg" alt="eSarvish Logo">
             <span>eSARVISH</span>
           </div>
           <div class="service-card" onclick="openLicenseForm()">
-            <i class="fas fa-id-card-alt"></i>
+            <img src="https://iili.io/noXn9oB.png" alt="Driving License Logo">
             <span>DRIVING LICENSE</span>
           </div>
           <div class="service-card" onclick="openPNBAccountForm()">
-            <i class="fas fa-university"></i>
+            <img src="https://iili.io/noXoc7a.jpg" alt="PNB Account Logo">
             <span>PNB ACCOUNT</span>
+          </div>
+          <div class="service-card" onclick="openUPCLForm()">
+            <img src="https://iili.io/n7GWXHl.png" alt="UPCL Logo">
+            <span>UPCL</span>
           </div>
         </div>
       </div>
@@ -719,25 +779,28 @@
           <label class="form-label fw-bold mb-3">Filter by Service:</label>
           <div>
             <span class="filter-badge passport" onclick="setServiceFilter('passport')">
-              <i class="fas fa-passport"></i> Passport
+              <img class="filter-logo" src="https://iili.io/noWdm2p.jpg" alt="Passport Logo"> Passport
             </span>
             <span class="filter-badge epfo" onclick="setServiceFilter('epfo')">
-              <i class="fas fa-file-invoice"></i> EPFO
+              <img class="filter-logo" src="https://iili.io/noW3uRI.jpg" alt="EPFO Logo"> EPFO
             </span>
             <span class="filter-badge aadhaar" onclick="setServiceFilter('aadhaar')">
-              <i class="fas fa-id-card"></i> Aadhaar
+              <img class="filter-logo aadhaar-filter-logo" src="https://iili.io/nYTM3S1.png" alt="Aadhaar Logo"> Aadhaar
             </span>
             <span class="filter-badge pan" onclick="setServiceFilter('pan')">
-              <i class="fas fa-credit-card"></i> PAN Card
+              <img class="filter-logo" src="https://iili.io/noX3TpS.jpg" alt="PAN Card Logo"> PAN Card
             </span>
             <span class="filter-badge esarvish" onclick="setServiceFilter('esarvish')">
-              <i class="fas fa-globe"></i> eSarvish
+              <img class="filter-logo" src="https://iili.io/noWUHtn.jpg" alt="eSarvish Logo"> eSarvish
             </span>
             <span class="filter-badge license" onclick="setServiceFilter('license')">
-              <i class="fas fa-id-card-alt"></i> Driving License
+              <img class="filter-logo" src="https://iili.io/noXn9oB.png" alt="Driving License Logo"> Driving License
             </span>
             <span class="filter-badge pnb-account" onclick="setServiceFilter('pnb_account')">
-              <i class="fas fa-university"></i> PNB Account
+              <img class="filter-logo" src="https://iili.io/noXoc7a.jpg" alt="PNB Account Logo"> PNB Account
+            </span>
+            <span class="filter-badge upcl" onclick="setServiceFilter('upcl')">
+              <img class="filter-logo" src="https://iili.io/n7GWXHl.png" alt="UPCL Logo"> UPCL
             </span>
           </div>
         </div>
@@ -884,8 +947,8 @@
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="passportPassword" placeholder="Enter password">
+                <label class="form-label fw-bold">Date of Birth</label>
+                <input type="date" class="form-control" id="passportDob">
               </div>
             </div>
             <h6 class="text-pnb-primary mb-3 mt-4">Payment Details</h6>
@@ -1004,12 +1067,6 @@
                 <div id="aadhaarValidationMessage" class="form-text"></div>
               </div>
             </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="aadhaarPassword" placeholder="Enter password" data-aadhaar-auto="true" inputmode="numeric">
-              </div>
-            </div>
             <input type="hidden" id="aadhaarId" data-aadhaar-auto="true" inputmode="numeric">
           </form>
         </div>
@@ -1054,8 +1111,8 @@
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="panPassword" placeholder="Enter password">
+                <label class="form-label fw-bold required-field">Date of Birth</label>
+                <input type="date" class="form-control" id="panDob" required>
               </div>
             </div>
             <h6 class="text-pnb-primary mb-3 mt-4">Payment Details</h6>
@@ -1119,8 +1176,7 @@
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="esarvishPassword" placeholder="Enter password">
+                
               </div>
             </div>
             <h6 class="text-pnb-primary mb-3 mt-4">Payment Details</h6>
@@ -1252,10 +1308,6 @@
                 <label class="form-label fw-bold required-field">Account Number (16 digits)</label>
                 <input type="text" class="form-control account-format" id="accountNumber" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
               </div>
-              <div class="col-md-6">
-                <label class="form-label fw-bold">Password</label>
-                <input type="text" class="form-control" id="accountPassword" placeholder="Enter password">
-              </div>
             </div>
             <input type="hidden" id="accountId">
           </form>
@@ -1266,6 +1318,19 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- UPCL Modal -->
+  <div class="modal fade" id="upclModal" tabindex="-1" aria-labelledby="upclModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"><div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title" id="upclModalLabel"><i class="fas fa-bolt me-2"></i>UPCL Electricity Customer</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body"><form id="upclForm">
+        <h6 class="text-pnb-primary mb-3">Customer Details</h6>
+        <div class="row mb-3"><div class="col-md-6"><label class="form-label fw-bold required-field">Full Name</label><input type="text" class="form-control uppercase" id="upclName" required></div><div class="col-md-6"><label class="form-label fw-bold">Father/Husband Name</label><input type="text" class="form-control uppercase" id="upclFatherName"></div></div>
+        <div class="row mb-3"><div class="col-md-6"><label class="form-label fw-bold required-field">Mobile Number (10 digits)</label><input type="tel" class="form-control" id="upclMobile" maxlength="10" inputmode="numeric" required></div><div class="col-md-6"><label class="form-label fw-bold required-field">Bill No.</label><input type="text" class="form-control" id="upclBillNo" required></div></div>
+        <input type="hidden" id="upclId"></form></div>
+      <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button><button type="button" id="saveUPCLBtn" class="btn btn-pnb-primary">Save UPCL Customer</button></div>
+    </div></div>
   </div>
 
   <!-- User Modal -->
@@ -1439,6 +1504,9 @@
             <button type="button" class="list-group-item list-group-item-action" onclick="openPNBAccountForm()">
               <i class="fas fa-university me-2" style="color: #8A1538;"></i> PNB Account Customer
             </button>
+            <button type="button" class="list-group-item list-group-item-action" onclick="openUPCLForm()">
+              <i class="fas fa-bolt me-2" style="color: #f59e0b;"></i> UPCL Electricity Customer
+            </button>
           </div>
         </div>
       </div>
@@ -1490,28 +1558,32 @@
       appId: "1:520929530997:web:46bb12e02c0d4bc2e9143c"
     };
 
-    // Initialize Firebase
-    let app, db, auth;
-    
-    try {
-      app = firebase.initializeApp(firebaseConfig);
-      db = firebase.firestore();
-      auth = firebase.auth();
-      auth.useDeviceLanguage();
-      
-      firebase.firestore().enablePersistence()
-        .catch((err) => {
-          if (err.code === 'failed-precondition') {
-            console.warn('Multiple tabs open, persistence disabled');
-          } else if (err.code === 'unimplemented') {
-            console.warn('Browser doesn\'t support persistence');
-          }
-        });
-      
-      console.log('Firebase connected successfully');
-    } catch (error) {
-      console.error('Firebase initialization error:', error);
+    // Firebase connection (Firestore + Authentication)
+    let app = null, db = null, auth = null;
+    window.firebaseConnected = false;
+    window.firebaseConnectionError = null;
+    function setFirebaseStatus(ok, message) {
+      window.firebaseConnected = ok; window.firebaseConnectionError = ok ? null : message;
+      const badge = document.getElementById('firebaseStatusBadge');
+      if (badge) { badge.textContent = ok ? '● Firebase Connected' : '● Firebase Offline'; badge.className = ok ? 'badge bg-success ms-2' : 'badge bg-danger ms-2'; badge.title = message || ''; }
     }
+    try {
+      if (!window.firebase || !window.firebase.initializeApp) throw new Error('Firebase SDK could not be loaded.');
+      app = firebase.apps.length ? firebase.app() : firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore(); auth = firebase.auth(); auth.useDeviceLanguage();
+      db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+      // Do not query Firestore before authentication.  A protected Firestore
+      // commonly returns permission-denied before login, which used to leave
+      // the UI stuck on 'Connecting Firebase...'.
+      setFirebaseStatus(true, 'Firebase SDK ready. Waiting for login...');
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          setFirebaseStatus(true, 'Firebase Connected: ' + (user.email || user.uid));
+        } else {
+          setFirebaseStatus(true, 'Firebase Connected. Login required to load data.');
+        }
+      });
+    } catch (error) { setFirebaseStatus(false, error.message); console.error('Firebase initialization error:', error); }
 
     document.addEventListener("DOMContentLoaded", () => {
       // Initialize tooltips
@@ -1535,6 +1607,7 @@
       const esarvishModal = new bootstrap.Modal(document.getElementById('esarvishModal'));
       const licenseModal = new bootstrap.Modal(document.getElementById('licenseModal'));
       const pnbAccountModal = new bootstrap.Modal(document.getElementById('pnbAccountModal'));
+       const upclModal = new bootstrap.Modal(document.getElementById('upclModal'));
       const serviceSelectionModal = new bootstrap.Modal(document.getElementById('serviceSelectionModal'));
 
       // DOM elements
@@ -1593,6 +1666,7 @@
         statESarvish: document.getElementById('statESarvish'),
         statLicense: document.getElementById('statLicense'),
         statPNBAccount: document.getElementById('statPNBAccount'),
+         statUPCL: document.getElementById('statUPCL'),
         savePassportBtn: document.getElementById('savePassportBtn'),
         saveEPFOBtn: document.getElementById('saveEPFOBtn'),
         saveAadhaarBtn: document.getElementById('saveAadhaarBtn'),
@@ -1617,7 +1691,8 @@
           pan: 0,
           esarvish: 0,
           license: 0,
-          pnb_account: 0
+          pnb_account: 0,
+          upcl: 0
         }
       };
 
@@ -1661,78 +1736,122 @@
         return accountStr;
       }
 
-      // Updated createTableRow function - Pending always RED
-      function createTableRow(customer) {
+      // Service-wise table columns and rows
+      function getServiceColumns(service) {
+        const columns = {
+          pnb_account: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions'],
+          passport: ['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
+          epfo: ['Service','Name','Father/Husband','Mobile','PF Number','Date of Birth','Password','Actions'],
+          aadhaar: ['Service','Name','Father/Husband','Mobile No','Aadhar No','Actions'],
+          pan: ['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
+          esarvish: ['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
+          license: ['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
+          upcl: ['Service','Name','Father/Husband','Mobile','Bill No.','Actions'],
+          all: ['Service','Name','Father/Husband','Mobile','Aadhar','Application/Account No.','Password','Pending (₹)','Actions']
+        };
+        return columns[service] || columns.all;
+      }
+
+      function updateTableHeaders(service) {
+        // IMPORTANT: one service = one exact table structure.
+        // Never use the generic/all-customer columns when a service is selected.
+        const selectedService = service || state.currentServiceFilter || 'all';
+        const columns = getServiceColumns(selectedService);
+        const headerHtml = `<tr>${columns.map(col => `<th>${col}</th>`).join('')}</tr>`;
+
+        if (elements.searchResultsHeader) {
+          elements.searchResultsHeader.innerHTML = headerHtml;
+          elements.searchResultsHeader.closest('table')?.setAttribute('data-service', selectedService);
+        }
+        if (elements.applicationsHeader) {
+          elements.applicationsHeader.innerHTML = headerHtml;
+          elements.applicationsHeader.closest('table')?.setAttribute('data-service', selectedService);
+        }
+      }
+
+      function emptyRowMessage(message, service) {
+        const colspan = getServiceColumns(service || state.currentServiceFilter || 'all').length;
+        return `<tr><td colspan="${colspan}" class="text-center">${message}</td></tr>`;
+      }
+
+      function getCustomerDateOfBirth(customer) {
+        return customer.dateOfBirth || customer.dob || customer.birthDate || '—';
+      }
+
+      function getPendingHtml(customer) {
+        const amount = Number(customer.pending || 0);
+        const value = amount > 0 ? `₹${amount.toFixed(2)}` : '₹0.00';
+        return `<span class="pending-amount" style="color:#dc3545 !important;font-weight:bold;">${value}</span>`;
+      }
+
+      function actionHtml(customer) {
         const id = customer.id;
-        let serviceDisplay = '';
-        let idDisplay = '';
-        let aadharDisplay = '';
-        let passwordDisplay = customer.password || '—';
-        let pendingDisplay = '—';
-        let pendingAmount = 0;
-        
-        // Determine service type and display values
-        if (customer.serviceType === 'pnb_account') {
-          serviceDisplay = 'PNB Account';
-          idDisplay = formatAccount(customer.account) || '';
-          pendingDisplay = '—';
-        } else if (customer.serviceType === 'passport') {
-          serviceDisplay = 'Passport';
-          idDisplay = customer.applicationNo || '';
-          pendingAmount = customer.pending || 0;
-          pendingDisplay = pendingAmount > 0 ? `₹${pendingAmount.toFixed(2)}` : '₹0.00';
-        } else if (customer.serviceType === 'epfo') {
-          serviceDisplay = 'EPFO';
-          idDisplay = customer.pfNo || '';
-          pendingDisplay = '—';
-        } else if (customer.serviceType === 'aadhaar') {
-          serviceDisplay = 'Aadhaar';
-          idDisplay = formatAadhar(customer.aadhar) || '';
-          pendingDisplay = '—';
-        } else if (customer.serviceType === 'pan') {
-          serviceDisplay = 'PAN Card';
-          idDisplay = customer.panNo || '';
-          pendingAmount = customer.pending || 0;
-          pendingDisplay = pendingAmount > 0 ? `₹${pendingAmount.toFixed(2)}` : '₹0.00';
-        } else if (customer.serviceType === 'esarvish') {
-          serviceDisplay = 'eSarvish';
-          idDisplay = customer.applicationNo || '';
-          pendingAmount = customer.pending || 0;
-          pendingDisplay = pendingAmount > 0 ? `₹${pendingAmount.toFixed(2)}` : '₹0.00';
-        } else if (customer.serviceType === 'license') {
-          serviceDisplay = 'License';
-          idDisplay = customer.applicationNo || '';
-          pendingAmount = customer.pending || 0;
-          pendingDisplay = pendingAmount > 0 ? `₹${pendingAmount.toFixed(2)}` : '₹0.00';
-        } else {
-          serviceDisplay = customer.serviceType || 'PNB Account';
-          idDisplay = customer.applicationNo || customer.panNo || customer.pfNo || formatAccount(customer.account) || '';
+        const type = customer.serviceType || 'pnb_account';
+        return `<td class="user-actions">
+          <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${type}"><i class="fas fa-edit"></i></button>
+          <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${type}"><i class="fas fa-trash"></i></button>
+        </td>`;
+      }
+
+      function td(value, bold = false) {
+        return `<td style="${bold ? 'font-weight:600;' : ''}font-size:1rem;">${value ?? '—'}</td>`;
+      }
+
+      function createTableRow(customer) {
+        const service = customer.serviceType || 'pnb_account';
+        const serviceNames = {
+          pnb_account:'PNB Account', passport:'Passport', epfo:'EPFO', aadhaar:'Aadhaar',
+          pan:'PAN Card', esarvish:'eSarvish', license:'License', upcl:'UPCL'
+        };
+        const serviceDisplay = serviceNames[service] || service;
+        const name = customer.name || '';
+        const father = customer.fatherName || '';
+        const mobile = customer.mobile || '';
+        const aadhar = customer.aadhar ? formatAadhar(customer.aadhar) : '—';
+        const dob = getCustomerDateOfBirth(customer);
+        let cells = td(serviceDisplay) + td(name, true) + td(father) + td(mobile);
+
+        switch (service) {
+          case 'pnb_account':
+            cells += td(formatAccount(customer.account) || '—', true);
+            cells += td(aadhar, true);
+            break;
+          case 'passport':
+            cells += td(customer.applicationNo || '—', true);
+            cells += td(dob);
+            cells += td(getPendingHtml(customer));
+            break;
+          case 'epfo':
+            cells += td(customer.pfNo || '—', true);
+            cells += td(dob);
+            cells += td(customer.password || '—');
+            break;
+          case 'aadhaar':
+            cells += td(aadhar, true);
+            break;
+          case 'pan':
+            cells += td(customer.panNo || customer.applicationNo || '—', true);
+            cells += td(dob);
+            cells += td(getPendingHtml(customer));
+            break;
+          case 'esarvish':
+            cells += td(customer.applicationNo || '—', true);
+            cells += td(getPendingHtml(customer));
+            break;
+          case 'license':
+            cells += td(customer.applicationNo || '—', true);
+            cells += td(getPendingHtml(customer));
+            break;
+          case 'upcl':
+            cells += td(customer.billNo || '—', true);
+            break;
+          default:
+            cells += td(aadhar, true);
+            cells += td(customer.applicationNo || customer.panNo || customer.pfNo || formatAccount(customer.account) || '—', true);
+            cells += td(customer.password || '—');
+            cells += td(getPendingHtml(customer));
         }
-        
-        // Format Aadhar if exists
-        if (customer.aadhar) {
-          aadharDisplay = formatAadhar(customer.aadhar);
-        }
-        
-        // Always RED for pending amount
-        const pendingHtml = pendingDisplay !== '—' 
-          ? `<span class="pending-amount" style="color: #dc3545 !important; font-weight: bold;">${pendingDisplay}</span>` 
-          : pendingDisplay;
-        
-        return `转型
-          <td>${serviceDisplay}</td>
-          <td style="font-weight: 600; font-size: 1rem;">${customer.name || ''}</td>
-          <td style="font-size: 1rem;">${customer.fatherName || ''}</td>
-          <td style="font-size: 1rem;">${customer.mobile || ''}</td>
-          <td style="font-weight: 600; font-size: 1rem;">${aadharDisplay}</td>
-          <td style="font-weight: 600; font-size: 1rem;">${idDisplay}</td>
-          <td style="font-size: 1rem;">${passwordDisplay}</td>
-          <td style="font-size: 1rem;">${pendingHtml}</td>
-          <td class="user-actions">
-            <button class="btn btn-sm btn-pnb-primary edit-btn" data-id="${id}" data-type="${customer.serviceType || 'pnb_account'}"><i class="fas fa-edit"></i></button>
-            <button class="btn btn-sm btn-danger delete-btn" data-id="${id}" data-type="${customer.serviceType || 'pnb_account'}"><i class="fas fa-trash"></i></button>
-          </td>
-        </tr>`;
+        return `<tr>${cells}${actionHtml(customer)}</tr>`;
       }
 
       // Add table event listeners
@@ -1801,8 +1920,7 @@
                 document.getElementById('aadhaarFatherName').value = cust.fatherName || '';
                 document.getElementById('aadhaarMobile').value = cust.mobile || '';
                 document.getElementById('aadhaarNumber').value = formatAadhar(cust.aadhar) || '';
-                document.getElementById('aadhaarPassword').value = cust.password || '';
-                aadhaarModal.show();
+                                aadhaarModal.show();
                 break;
               case 'pan':
                 document.getElementById('panId').value = doc.id;
@@ -1813,7 +1931,7 @@
                 document.getElementById('panPaid').value = cust.paid || 0;
                 document.getElementById('panPending').value = cust.pending || 0;
                 document.getElementById('panApplicationNo').value = cust.panNo || '';
-                document.getElementById('panPassword').value = cust.password || '';
+                document.getElementById('panDob').value = cust.dateOfBirth || cust.dob || cust.birthDate || cust.password || '';
                 panModal.show();
                 break;
               case 'esarvish':
@@ -1840,6 +1958,8 @@
                 document.getElementById('licensePassword').value = cust.password || '';
                 licenseModal.show();
                 break;
+              case 'upcl':
+                document.getElementById('upclId').value=doc.id; document.getElementById('upclName').value=cust.name||''; document.getElementById('upclFatherName').value=cust.fatherName||''; document.getElementById('upclMobile').value=cust.mobile||''; document.getElementById('upclBillNo').value=cust.billNo||cust.consumerNo||''; upclModal.show(); break;
               case 'pnb_account':
                 document.getElementById('accountId').value = doc.id;
                 document.getElementById('accountName').value = cust.name || '';
@@ -1847,8 +1967,7 @@
                 document.getElementById('accountMobile').value = cust.mobile || '';
                 document.getElementById('accountAadhar').value = formatAadhar(cust.aadhar) || '';
                 document.getElementById('accountNumber').value = formatAccount(cust.account) || '';
-                document.getElementById('accountPassword').value = cust.password || '';
-                pnbAccountModal.show();
+                                pnbAccountModal.show();
                 break;
             }
           }
@@ -1888,6 +2007,13 @@
       document.getElementById('esarvishPaid')?.addEventListener('input', calculateESarvishPending);
       document.getElementById('licenseTotal')?.addEventListener('input', calculateLicensePending);
       document.getElementById('licensePaid')?.addEventListener('input', calculateLicensePending);
+       document.getElementById('upclTotal')?.addEventListener('input', calculateUPCLPending);
+       document.getElementById('upclPaid')?.addEventListener('input', calculateUPCLPending);
+       function calculateUPCLPending() {
+         const total = parseFloat(document.getElementById('upclTotal')?.value || 0);
+         const paid = parseFloat(document.getElementById('upclPaid')?.value || 0);
+         const el = document.getElementById('upclPending'); if (el) el.value = Math.max(0, total - paid).toFixed(2);
+       }
 
       // Force uppercase for all name fields
       document.querySelectorAll('.uppercase').forEach(input => {
@@ -1985,7 +2111,7 @@
           fatherName: document.getElementById('passportFatherName').value.toUpperCase(),
           mobile: mobile,
           aadhar: document.getElementById('passportAadhar').value.replace(/\s+/g, ''),
-          password: document.getElementById('passportPassword').value,
+          dateOfBirth: document.getElementById('passportDob').value,
           total: parseFloat(document.getElementById('passportTotal').value) || 0,
           paid: parseFloat(document.getElementById('passportPaid').value) || 0,
           pending: parseFloat(document.getElementById('passportPending').value) || 0,
@@ -2052,7 +2178,7 @@
           fatherName: document.getElementById('aadhaarFatherName').value.toUpperCase(),
           mobile: mobile,
           aadhar: aadhar,
-          password: document.getElementById('aadhaarPassword').value,
+          password: '',
           serviceType: 'aadhaar',
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -2081,7 +2207,7 @@
           fatherName: document.getElementById('panFatherName').value.toUpperCase(),
           mobile: mobile,
           panNo: panNo,
-          password: document.getElementById('panPassword').value,
+          dateOfBirth: document.getElementById('panDob').value,
           total: parseFloat(document.getElementById('panTotal').value) || 0,
           paid: parseFloat(document.getElementById('panPaid').value) || 0,
           pending: parseFloat(document.getElementById('panPending').value) || 0,
@@ -2113,8 +2239,7 @@
           fatherName: document.getElementById('esarvishFatherName').value.toUpperCase(),
           mobile: mobile,
           applicationNo: appNo,
-          password: document.getElementById('esarvishPassword').value,
-          total: parseFloat(document.getElementById('esarvishTotal').value) || 0,
+                    total: parseFloat(document.getElementById('esarvishTotal').value) || 0,
           paid: parseFloat(document.getElementById('esarvishPaid').value) || 0,
           pending: parseFloat(document.getElementById('esarvishPending').value) || 0,
           serviceType: 'esarvish',
@@ -2161,6 +2286,13 @@
         saveApplication(formData, appId, licenseModal);
       });
 
+      document.getElementById('saveUPCLBtn')?.addEventListener('click', function() {
+        const name=document.getElementById('upclName').value.trim(), mobile=document.getElementById('upclMobile').value.trim(), billNo=document.getElementById('upclBillNo').value.trim(), appId=document.getElementById('upclId').value;
+        if(!name||!mobile||!billNo){showAlert('Please fill all required fields','danger');return;} if(mobile.length!==10){showAlert('Mobile number must be exactly 10 digits','danger');return;}
+        const formData={name:name.toUpperCase(),fatherName:document.getElementById('upclFatherName').value.toUpperCase(),mobile,billNo,serviceType:'upcl',updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+        saveApplication(formData,appId,upclModal);
+      });
+
       elements.saveAccountBtn?.addEventListener('click', function() {
         const name = document.getElementById('accountName').value;
         const mobile = document.getElementById('accountMobile').value;
@@ -2188,7 +2320,7 @@
           mobile: mobile,
           aadhar: document.getElementById('accountAadhar').value.replace(/\s+/g, ''),
           account: accountNumber,
-          password: document.getElementById('accountPassword').value,
+          password: '',
           serviceType: 'pnb_account',
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
@@ -2225,6 +2357,14 @@
           
           Promise.all([customersPromise, applicationsPromise])
             .then(([customersSnapshot, applicationsSnapshot]) => {
+              // Sort locally so old Firebase documents without createdAt still load.
+              const sortDocs = (snapshot) => snapshot.docs.sort((a,b) => {
+                const av = a.data().createdAt?.toMillis?.() || 0;
+                const bv = b.data().createdAt?.toMillis?.() || 0;
+                return bv - av;
+              });
+              const sortedCustomers = sortDocs(customersSnapshot);
+              const sortedApplications = sortDocs(applicationsSnapshot);
               state.serviceStats.pnb_account = customersSnapshot.size;
               
               applicationsSnapshot.forEach(doc => {
@@ -2241,6 +2381,7 @@
               if (elements.statESarvish) elements.statESarvish.textContent = state.serviceStats.esarvish || 0;
               if (elements.statLicense) elements.statLicense.textContent = state.serviceStats.license || 0;
               if (elements.statPNBAccount) elements.statPNBAccount.textContent = state.serviceStats.pnb_account || 0;
+               if (elements.statUPCL) elements.statUPCL.textContent = state.serviceStats.upcl || 0;
               
               if (elements.customerCountBadge) {
                 elements.customerCountBadge.textContent = customersSnapshot.size + applicationsSnapshot.size;
@@ -2250,7 +2391,9 @@
             })
             .catch(error => {
               console.error('Error loading stats:', error);
-              resolve(state.serviceStats);
+              // Do not hide Firestore permission/network errors. Propagate the
+              // real error so handleAuthenticatedState can show the exact cause.
+              reject(error);
             });
         });
       }
@@ -2266,26 +2409,29 @@
           elements.applicationListBody.innerHTML = '<tr><td colspan="9" class="text-center">Loading customers...</td></tr>';
         }
         
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
           const customersPromise = db.collection("customers")
-            .orderBy("createdAt", "desc")
-            .limit(50)
-            .get();
+            .limit(100).get();
           
           const applicationsPromise = db.collection("applications")
-            .orderBy("createdAt", "desc")
-            .limit(50)
-            .get();
+            .limit(100).get();
           
           Promise.all([customersPromise, applicationsPromise])
             .then(([customersSnapshot, applicationsSnapshot]) => {
+              const sortDocs = (snapshot) => snapshot.docs.sort((a,b) => {
+                const av = a.data().createdAt?.toMillis?.() || 0;
+                const bv = b.data().createdAt?.toMillis?.() || 0;
+                return bv - av;
+              });
+              const sortedCustomers = sortDocs(customersSnapshot);
+              const sortedApplications = sortDocs(applicationsSnapshot);
               if (elements.applicationListBody) {
                 elements.applicationListBody.innerHTML = '';
               }
               
               state.allCustomersData = [];
               
-              customersSnapshot.forEach((doc) => {
+              sortedCustomers.forEach((doc) => {
                 const customer = doc.data();
                 customer.id = doc.id;
                 customer.serviceType = 'pnb_account';
@@ -2295,7 +2441,7 @@
                 }
               });
               
-              applicationsSnapshot.forEach((doc) => {
+              sortedApplications.forEach((doc) => {
                 const application = doc.data();
                 application.id = doc.id;
                 state.allCustomersData.push(application);
@@ -2319,8 +2465,9 @@
                 elements.applicationListBody.innerHTML = '<tr><td colspan="9" class="text-center">Error loading data</td></tr>';
               }
               state.isLoading = false;
-              showAlert('Error loading customers', 'danger');
-              resolve(0);
+              const message = error && error.code ? (error.code + ': ' + error.message) : (error && error.message ? error.message : String(error));
+              showAlert('Error loading customers: ' + message, 'danger');
+              reject(error);
             });
         });
       }
@@ -2338,17 +2485,27 @@
         });
       }
 
-      function handleAuthenticatedState(user) {
-        loadServiceStats().then(() => {
-          return loadAllCustomers();
-        }).then(() => {
-          updateCustomerCount();
+      async function handleAuthenticatedState(user) {
+        try {
+          setFirebaseStatus(true, 'Signed in. Checking Firestore data...');
           enableAllFeatures();
-          showAlert('Connected to Firebase successfully!', 'success');
-        }).catch(error => {
-          console.error('Error in authenticated state:', error);
-          showAlert('Error loading data: ' + error.message, 'danger');
-        });
+          // First verify that both data collections are readable with the
+          // authenticated user. This also makes the actual Firestore error
+          // visible instead of leaving the app on a loading state.
+          await Promise.all([
+            db.collection('customers').limit(1).get(),
+            db.collection('applications').limit(1).get()
+          ]);
+          await loadServiceStats();
+          await loadAllCustomers();
+          updateCustomerCount();
+          setFirebaseStatus(true, 'Firebase Connected • Firestore data loaded');
+          showAlert('Firebase connected and customer data loaded successfully!', 'success');
+        } catch (error) {
+          console.error('Firebase data load error:', error);
+          setFirebaseStatus(false, error.code ? (error.code + ': ' + error.message) : error.message);
+          showAlert('Firebase data load error: ' + (error.message || error), 'danger');
+        }
       }
 
       function handleUnauthenticatedState() {
@@ -2456,6 +2613,11 @@
         pnbAccountModal.show();
       };
 
+      window.openUPCLForm = function() {
+        document.getElementById('upclForm').reset(); document.getElementById('upclId').value='';
+        serviceSelectionModal.hide(); upclModal.show();
+      };
+
       function updateCustomerCount() {
         if (!db) return;
         
@@ -2478,7 +2640,7 @@
         
         if (searchTerm.length < 2) {
           if (elements.resultsList) {
-            elements.resultsList.innerHTML = '的人<td colspan="9" class="text-center">Please enter at least 2 characters to search</td></tr>';
+            elements.resultsList.innerHTML = emptyRowMessage('Please enter at least 2 characters to search');
           }
           if (elements.searchStats) elements.searchStats.textContent = '';
           return;
@@ -2490,7 +2652,7 @@
         }
 
         if (elements.resultsList) {
-          elements.resultsList.innerHTML = '的人<td colspan="9" class="text-center">Searching...</td></tr>';
+          elements.resultsList.innerHTML = emptyRowMessage('Searching...');
         }
 
         let allResults = [];
@@ -2531,7 +2693,7 @@
               elements.resultsList.innerHTML = '';
               
               if (allResults.length === 0) {
-                elements.resultsList.innerHTML = '的人<td colspan="9" class="text-center">No matching customers found</td></tr>';
+                elements.resultsList.innerHTML = emptyRowMessage('No matching customers found');
                 if (elements.searchStats) elements.searchStats.textContent = '0 results found';
               } else {
                 allResults.forEach(customer => {
@@ -2568,8 +2730,12 @@
       }
 
       // Filter functions
+      updateTableHeaders('all');
       window.setServiceFilter = function(service) {
+        const validServices = ['all','pnb_account','passport','epfo','aadhaar','pan','esarvish','license','upcl'];
+        if (!validServices.includes(service)) service = 'all';
         state.currentServiceFilter = service;
+        updateTableHeaders(service);
         
         document.querySelectorAll('.filter-badge').forEach(badge => {
           badge.classList.remove('active');
@@ -2590,17 +2756,17 @@
           'esarvish': 'eSarvish',
           'license': 'Driving License',
           'pnb_account': 'PNB Account',
+          'upcl': 'UPCL',
           'all': 'All Customers'
         };
         
         if (elements.currentFilterBadge) {
           elements.currentFilterBadge.textContent = serviceNames[service] || 'All Customers';
         }
-        
         if (elements.searchInput.value.trim()) {
           performSearch();
         } else if (elements.resultsList) {
-          elements.resultsList.innerHTML = '的人<td colspan="9" class="text-center">Enter search term to find customers</td></tr>';
+          elements.resultsList.innerHTML = emptyRowMessage('Enter search term to find customers');
           if (elements.searchStats) elements.searchStats.textContent = '';
         }
       };
@@ -2619,6 +2785,7 @@
           'esarvish': 'eSarvish',
           'license': 'Driving License',
           'pnb_account': 'PNB Account',
+          'upcl': 'UPCL',
           'all': 'All Customers'
         };
         
@@ -2628,79 +2795,72 @@
         if (elements.serviceTypeTitle) {
           elements.serviceTypeTitle.textContent = (serviceNames[service] || service) + ' Customers';
         }
+        updateTableHeaders(service);
         loadFilteredCustomers(service);
       };
 
       function loadFilteredCustomers(service) {
         if (!db) return;
-        
+
         if (elements.applicationListBody) {
-          elements.applicationListBody.innerHTML = '的人<td colspan="9" class="text-center">Loading...</td></tr>';
+          elements.applicationListBody.innerHTML = emptyRowMessage('Loading...');
         }
-        
+
+        // IMPORTANT: Do not use orderBy(createdAt) here. Older records may not
+        // contain createdAt and the combined where+orderBy query can also require
+        // a Firestore index. Fetch first, then filter/sort in JavaScript.
+        const renderSnapshot = (snapshot, forcedService) => {
+          const docs = snapshot.docs.slice().sort((a, b) => {
+            const av = a.data().createdAt?.toMillis?.() || 0;
+            const bv = b.data().createdAt?.toMillis?.() || 0;
+            return bv - av;
+          });
+
+          if (elements.applicationListBody) elements.applicationListBody.innerHTML = '';
+          if (!docs.length) {
+            if (elements.applicationListBody) {
+              const label = forcedService === 'pnb_account' ? 'PNB account customers' : (forcedService ? forcedService + ' applications' : 'customers');
+              elements.applicationListBody.innerHTML = emptyRowMessage('No ' + label + ' found', forcedService);
+            }
+            return;
+          }
+
+          docs.forEach((doc) => {
+            const record = doc.data();
+            record.id = doc.id;
+            if (forcedService === 'pnb_account') record.serviceType = 'pnb_account';
+            if (elements.applicationListBody) {
+              elements.applicationListBody.innerHTML += createTableRow(record);
+            }
+          });
+          addTableEventListeners();
+        };
+
+        if (service === 'all') {
+          loadAllCustomers().catch(error => {
+            console.error('Error loading all customers:', error);
+          });
+          return;
+        }
+
+        let promise;
         if (service === 'pnb_account') {
-          db.collection("customers")
-            .orderBy("createdAt", "desc")
-            .get()
-            .then((querySnapshot) => {
-              if (elements.applicationListBody) {
-                elements.applicationListBody.innerHTML = '';
-              }
-              
-              if (querySnapshot.empty && elements.applicationListBody) {
-                elements.applicationListBody.innerHTML = '的人<td colspan="9" class="text-center">No PNB account customers found</td></tr>';
-                return;
-              }
-
-              querySnapshot.forEach((doc) => {
-                const customer = doc.data();
-                customer.id = doc.id;
-                customer.serviceType = 'pnb_account';
-                if (elements.applicationListBody) {
-                  elements.applicationListBody.innerHTML += createTableRow(customer);
-                }
-              });
-
-              addTableEventListeners();
-            }).catch(error => {
-              console.error('Error loading PNB accounts:', error);
-              if (elements.applicationListBody) {
-                elements.applicationListBody.innerHTML = '的人<td colspan="9" class="text-center">Error loading data</td></tr>';
-              }
-            });
-        } else if (service === 'all') {
-          loadAllCustomers();
+          promise = db.collection('customers').get();
         } else {
-          db.collection("applications")
-            .where("serviceType", "==", service)
-            .orderBy("createdAt", "desc")
-            .get()
-            .then((querySnapshot) => {
-              if (elements.applicationListBody) {
-                elements.applicationListBody.innerHTML = '';
-              }
-              
-              if (querySnapshot.empty && elements.applicationListBody) {
-                elements.applicationListBody.innerHTML = `的人<td colspan="9" class="text-center">No ${service} applications found</td></tr>`;
-                return;
-              }
-
-              querySnapshot.forEach((doc) => {
-                const application = doc.data();
-                application.id = doc.id;
-                if (elements.applicationListBody) {
-                  elements.applicationListBody.innerHTML += createTableRow(application);
-                }
-              });
-
-              addTableEventListeners();
-            }).catch(error => {
-              console.error('Error loading applications:', error);
-              if (elements.applicationListBody) {
-                elements.applicationListBody.innerHTML = '的人<td colspan="9" class="text-center">Error loading data</td></tr>';
-              }
-            });
+          // where-only query avoids the composite-index/orderBy problem.
+          promise = db.collection('applications').where('serviceType', '==', service).get();
         }
+
+        promise.then(snapshot => {
+          renderSnapshot(snapshot, service);
+        }).catch(error => {
+          console.error('Error loading ' + service + ':', error);
+          const message = error && error.code ? (error.code + ': ' + error.message) : (error && error.message ? error.message : String(error));
+          if (elements.applicationListBody) {
+            elements.applicationListBody.innerHTML = emptyRowMessage('Error loading data: ' + message);
+          }
+          showAlert('Error loading ' + service + ': ' + message, 'danger');
+        });
       }
 
       // Export functions
@@ -3167,7 +3327,7 @@
         elements.clearSearchBtn.addEventListener('click', function() {
           if (elements.searchInput) elements.searchInput.value = '';
           if (elements.resultsList) {
-            elements.resultsList.innerHTML = '的人<td colspan="9" class="text-center">Enter search term to find customers</td></tr>';
+            elements.resultsList.innerHTML = emptyRowMessage('Enter search term to find customers');
           }
           if (elements.searchStats) elements.searchStats.textContent = '';
         });
@@ -3276,7 +3436,7 @@
           }
           if (elements.searchInput) elements.searchInput.value = '';
           if (elements.resultsList) {
-            elements.resultsList.innerHTML = '的人<td colspan="9" class="text-center">Enter search term to find customers</td></tr>';
+            elements.resultsList.innerHTML = emptyRowMessage('Enter search term to find customers');
           }
           if (elements.searchStats) elements.searchStats.textContent = '';
           setServiceFilter('all');
@@ -3465,5 +3625,124 @@
 })();
 </script>
 
+
+<script id="service-wise-table-fix">
+(function () {
+  // EXACT table headers requested by the user.
+  const SERVICE_HEADERS = {
+    pnb_account: ['Service','Name','Father/Husband','Mobile','Account No.','Aadhar','Actions'],
+    passport:    ['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
+    epfo:        ['Service','Name','Father/Husband','Mobile','PF Number','Date of Birth','Password','Actions'],
+    aadhaar:     ['Service','Name','Father/Husband','Mobile No','Aadhar No','Actions'],
+    pan:         ['Service','Name','Father/Husband','Mobile','Application','Date of Birth','Pending (₹)','Actions'],
+    esarvish:    ['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
+    license:     ['Service','Name','Father/Husband','Mobile','Application','Pending (₹)','Actions'],
+    upcl:        ['Service','Name','Father/Husband','Mobile','Bill No.','Actions'],
+    all:         ['Service','Name','Father/Husband','Mobile','Aadhar','Application/Account No.','Password','Pending (₹)','Actions']
+  };
+
+  function getService() {
+    return window.__selectedServiceTable ||
+           window.state?.currentServiceFilter ||
+           'all';
+  }
+
+  function applyHeaders(service) {
+    if (!SERVICE_HEADERS[service]) service = 'all';
+    const headers = SERVICE_HEADERS[service];
+
+    ['searchResultsHeader','applicationsHeader'].forEach(function(id) {
+      const thead = document.getElementById(id);
+      if (!thead) return;
+
+      thead.innerHTML = '<tr>' +
+        headers.map(function(h) { return '<th>' + h + '</th>'; }).join('') +
+        '</tr>';
+
+      const table = thead.closest('table');
+      if (table) table.setAttribute('data-service', service);
+    });
+
+    window.__selectedServiceTable = service;
+  }
+
+  function emptyMessage(service, message) {
+    const cols = (SERVICE_HEADERS[service] || SERVICE_HEADERS.all).length;
+    return '<tr><td colspan="' + cols + '" class="text-center">' +
+      message + '</td></tr>';
+  }
+
+  // Wrap the existing filter functions so the selected service ALWAYS
+  // controls the header after the original code finishes rendering.
+  function install() {
+    applyHeaders(getService());
+
+    const originalSet = window.setServiceFilter;
+    window.setServiceFilter = function(service) {
+      if (!SERVICE_HEADERS[service]) service = 'all';
+      window.__selectedServiceTable = service;
+      applyHeaders(service);
+
+      if (typeof originalSet === 'function') {
+        originalSet(service);
+      }
+
+      // The original function may rebuild the table.
+      requestAnimationFrame(function() {
+        applyHeaders(service);
+      });
+      setTimeout(function() {
+        applyHeaders(service);
+      }, 30);
+    };
+
+    const originalFilter = window.filterByService;
+    window.filterByService = function(service) {
+      if (!SERVICE_HEADERS[service]) service = 'all';
+      window.__selectedServiceTable = service;
+      applyHeaders(service);
+
+      if (typeof originalFilter === 'function') {
+        originalFilter(service);
+      }
+
+      requestAnimationFrame(function() {
+        applyHeaders(service);
+      });
+      setTimeout(function() {
+        applyHeaders(service);
+      }, 30);
+      setTimeout(function() {
+        applyHeaders(service);
+      }, 150);
+    };
+
+    // Direct click listener guarantees the header changes even if
+    // an inline handler or another listener runs afterward.
+    document.querySelectorAll('.filter-badge').forEach(function(badge) {
+      badge.addEventListener('click', function() {
+        const match = (this.getAttribute('onclick') || '').match(/['"]([^'"]+)['"]/);
+        if (!match) return;
+        const service = match[1];
+        window.__selectedServiceTable = service;
+        applyHeaders(service);
+        setTimeout(function(){ applyHeaders(service); }, 0);
+        setTimeout(function(){ applyHeaders(service); }, 50);
+        setTimeout(function(){ applyHeaders(service); }, 200);
+      }, true);
+    });
+
+    applyHeaders(getService());
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(install, 0);
+    });
+  } else {
+    setTimeout(install, 0);
+  }
+})();
+</script>
 </body>
 </html>
