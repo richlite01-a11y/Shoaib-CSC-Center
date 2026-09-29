@@ -104,31 +104,14 @@
 
     .services-wrapper {
       display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 15px;
       padding: 10px 0 20px 0;
-      scrollbar-width: thin;
-      scrollbar-color: var(--pnb-primary) #f0f0f0;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .services-wrapper::-webkit-scrollbar {
-      height: 8px;
-    }
-
-    .services-wrapper::-webkit-scrollbar-track {
-      background: #f0f0f0;
-      border-radius: 10px;
-    }
-
-    .services-wrapper::-webkit-scrollbar-thumb {
-      background: var(--pnb-primary);
-      border-radius: 10px;
     }
 
     .service-card {
-      flex: 0 0 auto;
+      flex: 0 0 140px;
       min-width: 140px;
       background: white;
       border-radius: 10px;
