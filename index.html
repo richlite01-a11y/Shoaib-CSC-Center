@@ -328,12 +328,20 @@
 
     .filter-badge {
       cursor: pointer;
-      padding: 8px 18px;
+      padding: 6px 16px;
       margin: 0 8px 8px 0;
       border-radius: 30px;
       background: white;
       border: 1px solid #dee2e6;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      gap: 8px;
+      height: 52px;
+      min-height: 52px;
+      box-sizing: border-box;
+      line-height: 1;
       transition: all 0.3s ease;
       font-size: 0.95rem;
       font-weight: 500;
@@ -361,19 +369,20 @@
     }
 
     .filter-badge .filter-logo {
-      width: 28px;
-      height: 28px;
+      width: 34px;
+      height: 34px;
       object-fit: contain;
-      vertical-align: middle;
+      display: block;
+      flex: 0 0 34px;
+      margin: 0;
       border-radius: 5px;
-      flex: 0 0 28px;
     }
 
     .filter-badge .filter-logo.aadhaar-filter-logo {
       width: 42px;
       height: 42px;
       flex-basis: 42px;
-      margin: -7px 0;
+      margin: 0;
     }
 
     .filter-badge i {
@@ -552,8 +561,23 @@
       }
 
       .filter-badge {
+        height: 46px;
+        min-height: 46px;
         padding: 5px 10px;
+        gap: 6px;
         font-size: 0.75rem;
+      }
+
+      .filter-badge .filter-logo {
+        width: 30px;
+        height: 30px;
+        flex-basis: 30px;
+      }
+
+      .filter-badge .filter-logo.aadhaar-filter-logo {
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
       }
 
       .stat-card {
@@ -792,7 +816,7 @@
           <span class="input-group-text bg-white" id="searchFilterLabel">
             <i class="fas fa-search text-pnb-primary"></i>
           </span>
-          <input type="text" id="searchInput" class="form-control" placeholder="Search by name, father/husband, mobile, Aadhar, account number..." aria-label="Search customers">
+          <input type="text" id="searchInput" class="form-control" placeholder="Search by name, mobile, UPCL Bill No., Aadhar, account number..." aria-label="Search customers">
           <button id="searchBtn" class="btn btn-pnb-primary" aria-label="Search">
             <i class="fas fa-search me-1"></i> Search
           </button>
@@ -2348,6 +2372,14 @@
               });
               const sortedCustomers = sortDocs(customersSnapshot);
               const sortedApplications = sortDocs(applicationsSnapshot);
+
+              // Keep a local in-memory search index. After the initial Firebase
+              // load, customer searches no longer make a new Firestore request.
+              state.allCustomersData = [
+                ...sortedCustomers.map(doc => ({ id: doc.id, ...doc.data(), serviceType: 'pnb_account' })),
+                ...sortedApplications.map(doc => ({ id: doc.id, ...doc.data() }))
+              ];
+
               state.serviceStats.pnb_account = customersSnapshot.size;
               
               applicationsSnapshot.forEach(doc => {
@@ -2393,11 +2425,23 @@
         }
         
         return new Promise((resolve, reject) => {
-          const customersPromise = db.collection("customers")
-            .limit(100).get();
-          
-          const applicationsPromise = db.collection("applications")
-            .limit(100).get();
+          // The stats loader already fills this cache during authentication.
+          // Render from it immediately instead of downloading the same data again.
+          if (Array.isArray(state.allCustomersData) && state.allCustomersData.length > 0) {
+            if (elements.applicationListBody) elements.applicationListBody.innerHTML = '';
+            state.allCustomersData.forEach(customer => {
+              if (elements.applicationListBody) {
+                elements.applicationListBody.innerHTML += createTableRow(customer);
+              }
+            });
+            addTableEventListeners();
+            state.isLoading = false;
+            resolve(state.allCustomersData.length);
+            return;
+          }
+
+          const customersPromise = db.collection("customers").get();
+          const applicationsPromise = db.collection("applications").get();
           
           Promise.all([customersPromise, applicationsPromise])
             .then(([customersSnapshot, applicationsSnapshot]) => {
@@ -2618,9 +2662,10 @@
       }
 
       // Search functions
+      // Uses the in-memory Firebase data cache for near-instant results.
       function performSearch() {
         const searchTerm = elements.searchInput.value.trim();
-        
+
         if (searchTerm.length < 2) {
           if (elements.resultsList) {
             elements.resultsList.innerHTML = emptyRowMessage('Please enter at least 2 characters to search');
@@ -2634,66 +2679,33 @@
           return;
         }
 
-        if (elements.resultsList) {
-          elements.resultsList.innerHTML = emptyRowMessage('Searching...');
-        }
+        const started = performance.now();
+        const term = state.caseSensitive ? searchTerm : searchTerm.toLowerCase();
 
-        let allResults = [];
-        let searchPromises = [];
-
-        if (state.currentServiceFilter === 'all' || state.currentServiceFilter === 'pnb_account') {
-          const customerPromise = db.collection("customers").get().then((snapshot) => {
-            snapshot.forEach((doc) => {
-              const data = doc.data();
-              if (matchesSearch(data, searchTerm)) {
-                allResults.push({ id: doc.id, ...data, serviceType: 'pnb_account' });
-              }
-            });
-          });
-          searchPromises.push(customerPromise);
-        }
-
-        if (state.currentServiceFilter === 'all' || state.currentServiceFilter !== 'pnb_account') {
-          let appQuery = db.collection("applications");
-          if (state.currentServiceFilter !== 'all') {
-            appQuery = appQuery.where("serviceType", "==", state.currentServiceFilter);
+        const source = state.allCustomersData || [];
+        const allResults = source.filter(data => {
+          if (state.currentServiceFilter !== 'all' && data.serviceType !== state.currentServiceFilter) {
+            return false;
           }
-          
-          const appPromise = appQuery.get().then((snapshot) => {
-            snapshot.forEach((doc) => {
-              const data = doc.data();
-              if (matchesSearch(data, searchTerm)) {
-                allResults.push({ id: doc.id, ...data });
-              }
-            });
-          });
-          searchPromises.push(appPromise);
+          return matchesSearch(data, term);
+        });
+
+        if (elements.resultsList) {
+          elements.resultsList.innerHTML = '';
+          if (allResults.length === 0) {
+            elements.resultsList.innerHTML = emptyRowMessage('No matching customers found');
+          } else {
+            // Build the table in one operation instead of repeatedly using +=.
+            elements.resultsList.innerHTML = allResults.map(createTableRow).join('');
+            addTableEventListeners();
+          }
         }
 
-        Promise.all(searchPromises)
-          .then(() => {
-            if (elements.resultsList) {
-              elements.resultsList.innerHTML = '';
-              
-              if (allResults.length === 0) {
-                elements.resultsList.innerHTML = emptyRowMessage('No matching customers found');
-                if (elements.searchStats) elements.searchStats.textContent = '0 results found';
-              } else {
-                allResults.forEach(customer => {
-                  elements.resultsList.innerHTML += createTableRow(customer);
-                });
-                
-                if (elements.searchStats) {
-                  elements.searchStats.textContent = `${allResults.length} result${allResults.length > 1 ? 's' : ''} found`;
-                }
-                addTableEventListeners();
-              }
-            }
-          })
-          .catch(error => {
-            console.error('Search error:', error);
-            showAlert('Error performing search: ' + error.message, 'danger');
-          });
+        if (elements.searchStats) {
+          elements.searchStats.textContent = `${allResults.length} result${allResults.length !== 1 ? 's' : ''} found`;
+        }
+
+        console.debug(`Search completed in ${(performance.now() - started).toFixed(1)}ms`);
       }
 
       function matchesSearch(data, term) {
@@ -2706,10 +2718,12 @@
           data.account ? data.account.toString() : '',
           data.panNo,
           data.pfNo,
+          data.billNo,
           data.password
-        ].filter(field => field).join(' ').toLowerCase();
-        
-        return searchFields.includes(term.toLowerCase());
+        ].filter(field => field !== undefined && field !== null && field !== '');
+
+        const haystack = searchFields.join(' ');
+        return state.caseSensitive ? haystack.includes(term) : haystack.toLowerCase().includes(term.toLowerCase());
       }
 
       // Filter functions
