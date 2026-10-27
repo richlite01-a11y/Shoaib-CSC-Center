@@ -21,9 +21,38 @@
     }
 
     .navbar {
-      padding: 1rem 1rem;
-      background: linear-gradient(135deg, #8A1538 0%, #6A102C 100%);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      position: relative;
+      isolation: isolate;
+      overflow: visible;
+      padding: 0.72rem 1.1rem;
+      min-height: 78px;
+      background: linear-gradient(112deg, #68102d 0%, #94113d 42%, #790e32 72%, #5c0b28 100%);
+      border: 1px solid rgba(255, 215, 0, .38);
+      border-bottom: 3px solid #f4bd32;
+      border-radius: 0 0 15px 15px;
+      box-shadow: 0 7px 22px rgba(94, 10, 40, .22), inset 0 1px 0 rgba(255,255,255,.22);
+    }
+    .navbar::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      inset: 0 0 0 48%;
+      background: linear-gradient(145deg, transparent 35%, rgba(255,215,0,.10) 35.3%, rgba(255,215,0,.10) 36%, transparent 36.3%),
+                  linear-gradient(160deg, transparent 55%, rgba(255,255,255,.08) 55.3%, rgba(255,255,255,.08) 63%, transparent 63.3%);
+      pointer-events: none;
+    }
+    .navbar::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      right: -35px;
+      bottom: -45px;
+      width: 240px;
+      height: 95px;
+      border-top: 2px solid rgba(255,215,0,.78);
+      border-radius: 50%;
+      transform: rotate(-10deg);
+      pointer-events: none;
     }
 
     .navbar-brand {
@@ -36,8 +65,34 @@
     }
 
     .navbar-brand img {
-      height: 40px;
+      height: 46px;
+      max-width: 220px;
+      object-fit: contain;
       margin-right: 15px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,.18));
+    }
+    .navbar-brand { position: relative; z-index: 1; gap: 2px; text-shadow: 0 1px 2px rgba(0,0,0,.15); }
+    .brand-name { font-size: 1.22rem; font-weight: 800; color: #fff; }
+    .brand-subtitle { font-size: .82rem; font-weight: 600; color: #ffe7a0; letter-spacing: .25px; }
+    .three-dots-menu { position: relative; z-index: 3001; }
+    .navbar:has(.dropdown-menu.show) { z-index: 3000; }
+    #dropdownMenuButton {
+      border: 1px solid #ffd45c;
+      border-radius: 10px;
+      padding: 8px 16px;
+      color: #71102f;
+      font-weight: 700;
+      background: linear-gradient(180deg, #fffdf7, #ffe9a8);
+      box-shadow: 0 3px 10px rgba(0,0,0,.16), inset 0 1px 0 #fff;
+    }
+    #dropdownMenuButton:hover { background: #fff; transform: translateY(-1px); }
+    @media (max-width: 768px) {
+      .navbar { padding: .65rem .7rem; min-height: 68px; }
+      .navbar-brand { font-size: 1rem; }
+      .navbar-brand img { height: 34px; max-width: 125px; margin-right: 8px; }
+      .brand-name { font-size: .95rem; }
+      .brand-subtitle { font-size: .72rem; }
+      #dropdownMenuButton { padding: 6px 9px; }
     }
 
     .brand-text {
@@ -225,6 +280,8 @@
     }
 
     .three-dots-menu .dropdown-menu {
+      z-index: 3000;
+      position: absolute;
       border-radius: 10px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
       border: 1px solid rgba(0, 0, 0, 0.05);
@@ -455,16 +512,20 @@
     .service-stats {
       display: flex;
       gap: 15px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       margin-bottom: 20px;
+      width: 100%;
+      overflow-x: auto;
+      padding: 3px 2px 8px;
+      scrollbar-width: thin;
     }
 
     .stat-card {
       background: white;
       border-radius: 10px;
       padding: 15px 20px;
-      flex: 1;
-      min-width: 130px;
+      flex: 1 0 0;
+      min-width: 0;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
       border-left: 4px solid var(--pnb-primary);
       transition: all 0.3s ease;
@@ -493,6 +554,82 @@
       font-size: 2rem;
       color: var(--pnb-primary);
       opacity: 0.2;
+    }
+
+    /* Stylish PNB dashboard statistic cards */
+    .service-stats {
+      display: grid !important;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+      overflow-x: auto;
+      padding: 6px 3px 14px;
+      margin-bottom: 20px;
+      scrollbar-width: thin;
+    }
+    .stat-card {
+      position: relative;
+      min-width: 0 !important;
+      min-height: 104px;
+      padding: 16px 13px 13px !important;
+      overflow: hidden;
+      border: 1px solid rgba(251,188,9,.75) !important;
+      border-left: 4px solid var(--pnb-primary) !important;
+      border-radius: 16px !important;
+      background: linear-gradient(145deg, #ffffff 0%, #fff9f0 100%);
+      box-shadow: 0 7px 18px rgba(138,21,56,.10), inset 0 1px 0 #fff;
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      width: 74px;
+      height: 74px;
+      right: -28px;
+      top: -30px;
+      border-radius: 50%;
+      background: rgba(251,188,9,.12);
+      pointer-events: none;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(138,21,56,.17);
+      border-color: var(--pnb-secondary) !important;
+    }
+    .stat-card .stat-label {
+      display: block;
+      position: relative;
+      z-index: 1;
+      font-size: clamp(.62rem, .72vw, .78rem);
+      line-height: 1.3;
+      color: #6b5360;
+      font-weight: 700;
+      letter-spacing: .35px;
+      text-transform: uppercase;
+      padding-right: 20px;
+    }
+    .stat-card .stat-value {
+      position: relative;
+      z-index: 1;
+      margin-top: 5px;
+      font-size: clamp(1.05rem, 1.35vw, 1.55rem);
+      line-height: 1.2;
+      font-weight: 800;
+      color: var(--pnb-primary);
+      letter-spacing: .2px;
+    }
+    .stat-card .stat-icon {
+      position: absolute;
+      right: 11px;
+      top: 16px;
+      float: none;
+      font-size: clamp(1.25rem, 1.7vw, 1.8rem);
+      color: var(--pnb-primary);
+      opacity: .22;
+    }
+    @media (max-width: 900px) {
+      .service-stats { grid-template-columns: repeat(8, minmax(118px, 1fr)); }
+      .stat-card { min-height: 94px; }
     }
 
     /* Search button larger */
@@ -580,8 +717,13 @@
         flex-basis: 36px;
       }
 
+      .service-stats {
+        gap: 8px;
+      }
+
       .stat-card {
-        min-width: 80px;
+        flex: 0 0 125px;
+        min-width: 125px;
         padding: 8px 10px;
       }
 
@@ -618,7 +760,1122 @@
     .change-password-card .form-control:focus{border-color:#8A1538;box-shadow:0 0 0 .2rem rgba(138,21,56,.15);}
     .change-password-card .password-help{font-size:13px;color:#6c757d;}
     @media(max-width:576px){.secure-delete-modal .modal-dialog{margin:10px}.secure-delete-hero{height:185px}.secure-delete-body h2{font-size:26px}.secure-delete-body p{font-size:16px}.secure-delete-footer{padding:16px 20px 22px}.secure-delete-btn{min-height:54px;font-size:16px}}
-  </style>
+
+
+    /* Keep all CSC service cards on one horizontal line */
+    .services-wrapper {
+      flex-wrap: nowrap !important;
+      justify-content: flex-start !important;
+      gap: 10px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 10px 2px 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .services-wrapper .service-card {
+      flex: 1 0 0;
+      min-width: 0;
+      padding: 10px 6px;
+      margin: 0;
+    }
+    .services-wrapper .service-card img,
+    .services-wrapper .service-card img.aadhaar-logo {
+      width: clamp(42px, 6vw, 72px);
+      height: clamp(42px, 6vw, 72px);
+      object-fit: contain;
+    }
+    .services-wrapper .service-card span {
+      display: block;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      font-size: clamp(0.62rem, 0.8vw, 0.82rem);
+    }
+
+    /* Keep all Search Customers service filters on one horizontal line */
+    .search-filters > div {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 2px 2px 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .search-filters .filter-badge {
+      flex: 0 0 auto;
+      white-space: nowrap;
+      margin: 0;
+    }
+    @media (max-width: 767px) {
+      .services-wrapper { gap: 7px; }
+      .services-wrapper .service-card { padding: 8px 4px; }
+      .services-wrapper .service-card span { font-size: 0.62rem; }
+    }
+
+  
+    /* Screenshot 2 style: bold PNB maroon-and-gold service counter cards */
+    .service-stats {
+      display: grid !important;
+      grid-template-columns: repeat(8, minmax(145px, 1fr)) !important;
+      gap: 10px !important;
+      overflow-x: auto !important;
+      padding: 8px 5px 16px !important;
+      scrollbar-width: thin;
+    }
+    .service-stats .stat-card {
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      position: relative;
+      min-width: 145px !important;
+      min-height: 202px !important;
+      padding: 16px 12px 12px !important;
+      border: 1px solid #fbbc09 !important;
+      border-left: 4px solid #8A1538 !important;
+      border-radius: 16px !important;
+      background: linear-gradient(155deg,#fff 0%,#fffaf3 100%) !important;
+      box-shadow: 0 8px 18px rgba(138,21,56,.12), inset 0 1px 0 #fff !important;
+      overflow: hidden;
+    }
+    .service-stats .stat-card::before {
+      content: "";
+      position: absolute;
+      left: -24px; top: -35px;
+      width: 100px; height: 82px;
+      background: linear-gradient(135deg,#8A1538 0 42%,#fbbc09 43% 49%,transparent 50%);
+      border-radius: 18px 0 70px 0;
+      opacity: .98;
+      pointer-events: none;
+    }
+    .service-stats .stat-card::after {
+      content: "";
+      position: absolute;
+      right: 12px; bottom: 17px;
+      width: 35px; height: 35px;
+      border-radius: 50%;
+      background: #8A1538;
+      box-shadow: 0 2px 5px rgba(138,21,56,.18);
+      pointer-events: none;
+    }
+    .service-stats .stat-card .stat-icon {
+      position: relative;
+      z-index: 1;
+      float: none;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 76px; height: 76px;
+      margin: 2px auto 10px;
+      top: auto; right: auto;
+      border-radius: 50%;
+      background: #8A1538;
+      color: #FFD56A;
+      opacity: 1;
+      font-size: 34px;
+      box-shadow: 0 5px 12px rgba(138,21,56,.16);
+    }
+    .service-stats .stat-card .stat-label {
+      position: relative;
+      z-index: 1;
+      display: block;
+      padding: 0 0 8px;
+      min-height: 27px;
+      text-align: center;
+      color: #30252a;
+      font-size: clamp(.7rem,.78vw,.88rem);
+      line-height: 1.25;
+      font-weight: 800;
+      letter-spacing: .1px;
+    }
+    .service-stats .stat-card .stat-value {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 48px;
+      margin-top: auto;
+      padding: 5px 49px 5px 13px;
+      border-left: 5px solid #fbbc09;
+      border-radius: 8px 18px 18px 8px;
+      background: linear-gradient(90deg,#fff8e9 0%,#fff0f2 100%);
+      color: #8A1538;
+      font-size: clamp(1.25rem,1.65vw,1.85rem);
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: .1px;
+    }
+    .service-stats .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: #fbbc09 !important;
+      box-shadow: 0 13px 24px rgba(138,21,56,.19) !important;
+    }
+    .service-stats .stat-card:hover::after { transform: scale(1.05); }
+    .service-stats .stat-card::after {
+      color: #fff;
+      content: "›";
+      font-family: Arial, sans-serif;
+      font-size: 31px;
+      font-weight: 700;
+      line-height: 30px;
+      text-align: center;
+      padding-top: 2px;
+      box-sizing: border-box;
+    }
+    @media (max-width: 900px) {
+      .service-stats { grid-template-columns: repeat(8, minmax(145px, 1fr)) !important; }
+      .service-stats .stat-card { min-height: 190px !important; }
+    }
+    @media (max-width: 767px) {
+      .service-stats { grid-template-columns: repeat(8, minmax(132px, 1fr)) !important; gap: 8px !important; }
+      .service-stats .stat-card { min-width: 132px !important; min-height: 178px !important; padding: 12px 9px 10px !important; }
+      .service-stats .stat-card .stat-icon { width: 62px; height: 62px; font-size: 28px; }
+      .service-stats .stat-card .stat-value { font-size: 1.2rem; min-height: 42px; padding-left: 10px; padding-right: 43px; }
+      .service-stats .stat-card::after { width: 30px; height: 30px; right: 9px; bottom: 16px; font-size: 27px; line-height: 25px; }
+    }
+
+
+
+    .dashboard-service-card { cursor: pointer !important; user-select: none; }
+    .dashboard-service-card:focus-visible { outline: 3px solid #fbbc09; outline-offset: 3px; }
+
+  /* Final compact sizing: all eight dashboard cards visible together on desktop */
+  .service-stats {
+    display:grid !important;
+    grid-template-columns:repeat(8,minmax(0,1fr)) !important;
+    gap:8px !important; width:100%; overflow-x:hidden !important;
+    padding:5px 2px 10px !important; margin-bottom:14px !important;
+  }
+  .service-stats .stat-card {
+    min-width:0 !important; min-height:148px !important; height:148px;
+    padding:10px 8px 9px !important; border-radius:13px !important;
+    border:1px solid #fbbc09 !important; border-left:4px solid #8A1538 !important;
+    background:linear-gradient(155deg,#fff 0%,#fffaf3 100%) !important;
+    box-shadow:0 5px 12px rgba(138,21,56,.10) !important;
+  }
+  .service-stats .stat-card::before { width:64px; height:54px; left:-18px; top:-22px; }
+  .service-stats .stat-card .stat-icon {
+    width:48px !important; height:48px !important; font-size:22px !important;
+    margin:5px auto 7px !important; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:#8A1538; color:#FFD56A; opacity:1;
+  }
+  .service-stats .stat-card .stat-label {
+    font-size:clamp(9px,.72vw,11px) !important; line-height:1.15 !important;
+    min-height:22px !important; padding:0 0 4px !important;
+    text-align:center; letter-spacing:0 !important; overflow-wrap:anywhere;
+  }
+  .service-stats .stat-card .stat-value {
+    min-height:34px !important; height:34px; margin-top:auto !important;
+    padding:4px 31px 4px 8px !important; border-left:4px solid #fbbc09 !important;
+    font-size:clamp(13px,1.15vw,18px) !important; line-height:1.1 !important;
+    border-radius:7px 14px 14px 7px !important;
+  }
+  .service-stats .stat-card::after {
+    width:25px !important; height:25px !important; right:7px !important; bottom:13px !important;
+    font-size:23px !important; line-height:22px !important; padding-top:1px !important;
+  }
+  /* CSC Services: stylish compact cards matching the supplied reference */
+  .services-wrapper { display:flex !important; flex-wrap:nowrap !important; gap:10px !important;
+    justify-content:space-between !important; overflow-x:hidden !important; padding:10px 2px 12px !important; }
+  .services-wrapper .service-card { flex:1 1 0 !important; min-width:0 !important;
+    padding:8px 5px 7px !important; border:1px solid rgba(138,21,56,.16) !important;
+    border-left:3px solid #fbbc09 !important; border-radius:13px !important;
+    background:linear-gradient(145deg,#fff 0%,#fff8f4 100%) !important;
+    box-shadow:0 6px 13px rgba(138,21,56,.15) !important; position:relative; overflow:hidden; }
+  .services-wrapper .service-card::before { content:""; position:absolute; top:0; left:0; width:35px; height:35px;
+    background:linear-gradient(135deg,#8A1538 0 48%,#fbbc09 49% 62%,transparent 63%); pointer-events:none; }
+  .services-wrapper .service-card img,
+  .services-wrapper .service-card img.aadhaar-logo { width:clamp(54px,5.8vw,78px) !important;
+    height:clamp(54px,5.8vw,78px) !important; object-fit:contain; margin:2px auto 6px !important; position:relative; z-index:1; }
+  .services-wrapper .service-card i { font-size:1.4rem !important; margin-bottom:5px !important; }
+  .services-wrapper .service-card span { display:block; white-space:normal !important;
+    font-size:clamp(9px,.7vw,11px) !important; line-height:1.15 !important; overflow-wrap:anywhere;
+    background:#fff1eb; border-left:2px solid #fbbc09; border-radius:7px; padding:7px 2px !important;
+    color:#571326 !important; font-weight:700 !important; }
+  .services-wrapper .service-card:hover { transform:translateY(-2px); box-shadow:0 9px 16px rgba(138,21,56,.2) !important; }
+  @media(max-width:900px) {
+    .service-stats { grid-template-columns:repeat(8,minmax(0,1fr)) !important; gap:6px !important; }
+    .service-stats .stat-card { min-height:130px !important; height:130px; padding:8px 5px !important; }
+    .service-stats .stat-card .stat-icon { width:40px !important; height:40px !important; font-size:19px !important; }
+    .service-stats .stat-card .stat-value { padding-right:24px !important; font-size:12px !important; }
+    .service-stats .stat-card::after { width:20px !important; height:20px !important; right:5px !important; bottom:12px !important; font-size:19px !important; line-height:18px !important; }
+    .services-wrapper { overflow-x:auto !important; }
+    .services-wrapper .service-card { flex:0 0 105px !important; }
+    .services-wrapper .service-card img,
+    .services-wrapper .service-card img.aadhaar-logo { width:78px !important; height:78px !important; }
+  }
+  @media(max-width:600px) {
+    .service-stats { overflow-x:auto !important; grid-template-columns:repeat(8,minmax(104px,1fr)) !important; }
+    .services-wrapper { overflow-x:auto !important; }
+  }
+
+  
+
+    /* Premium Search Customers header and matching search panel */
+    .card:has(#searchInput) {
+      border: 1px solid rgba(138,21,56,.14) !important;
+      border-radius: 18px !important;
+      overflow: hidden !important;
+      background: linear-gradient(180deg,#fff 0%,#fffdfd 100%) !important;
+      box-shadow: 0 12px 28px rgba(80,20,38,.12) !important;
+    }
+    .card:has(#searchInput) > .card-header {
+      position: relative;
+      isolation: isolate;
+      min-height: 66px;
+      padding: 15px 24px !important;
+      color: #fff !important;
+      border: 0 !important;
+      border-bottom: 3px solid #fbbc09 !important;
+      background: linear-gradient(110deg,#7d1234 0%,#a20e37 54%,#7b102f 100%) !important;
+      overflow: hidden;
+    }
+    .card:has(#searchInput) > .card-header::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: -72px;
+      right: 12%;
+      width: 42%;
+      height: 150px;
+      border-radius: 0 0 70% 70%;
+      transform: rotate(-7deg);
+      background: linear-gradient(120deg,rgba(255,255,255,.10),rgba(255,255,255,0));
+    }
+    .card:has(#searchInput) > .card-header::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      right: -8px;
+      bottom: 0;
+      width: 115px;
+      height: 100%;
+      background: linear-gradient(135deg,transparent 0 48%,#fbbc09 49% 100%);
+      opacity: .95;
+    }
+    .card:has(#searchInput) > .card-header h5 {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: clamp(1.05rem,1.4vw,1.35rem) !important;
+      font-weight: 800 !important;
+      letter-spacing: .15px;
+      color: #fff !important;
+      text-shadow: 0 2px 8px rgba(0,0,0,.14);
+    }
+    .card:has(#searchInput) > .card-header h5 i {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      margin-right: 6px !important;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 50%;
+      color: #fff !important;
+      background: linear-gradient(145deg,#c21c4b,#870f32);
+      box-shadow: 0 4px 12px rgba(30,0,10,.22), inset 0 1px 0 rgba(255,255,255,.2);
+    }
+    #currentFilterBadge {
+      position: relative;
+      z-index: 1;
+      padding: 7px 14px !important;
+      border: 1px solid rgba(251,188,9,.85) !important;
+      border-radius: 999px !important;
+      color: #7d1234 !important;
+      background: linear-gradient(180deg,#fff,#fff8e8) !important;
+      font-weight: 700 !important;
+      box-shadow: 0 3px 10px rgba(0,0,0,.12);
+    }
+    .card:has(#searchInput) > .card-body { padding: 18px 20px 20px !important; }
+    .card:has(#searchInput) .search-filters {
+      padding: 16px 18px 8px;
+      margin-bottom: 18px;
+      border: 1px solid #f7dfe5;
+      border-radius: 16px;
+      background: linear-gradient(135deg,#fff7f8,#fff 70%);
+      box-shadow: inset 0 1px 0 #fff;
+    }
+    .card:has(#searchInput) .search-filters > label {
+      color: #861638;
+      font-size: 1rem;
+      font-weight: 800 !important;
+    }
+    .card:has(#searchInput) .filter-badge {
+      border: 1px solid #f1d5dd !important;
+      background: linear-gradient(180deg,#fff,#fffaf5) !important;
+      box-shadow: 0 3px 8px rgba(138,21,56,.07);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+    .card:has(#searchInput) .filter-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 13px rgba(138,21,56,.14);
+    }
+    .card:has(#searchInput) .input-group {
+      border-radius: 13px;
+      filter: drop-shadow(0 5px 10px rgba(138,21,56,.09));
+    }
+    .card:has(#searchInput) #searchFilterLabel {
+      border: 1px solid #f0d6dd;
+      border-right: 0;
+      border-radius: 13px 0 0 13px;
+      padding-left: 16px;
+    }
+    .card:has(#searchInput) #searchInput {
+      min-height: 50px;
+      border-color: #f0d6dd;
+      font-size: 1rem;
+    }
+    .card:has(#searchInput) #searchInput:focus {
+      border-color: #a20e37;
+      box-shadow: 0 0 0 .2rem rgba(162,14,55,.12);
+    }
+    .card:has(#searchInput) #searchBtn {
+      min-width: 112px;
+      border: 1px solid #fbbc09 !important;
+      background: linear-gradient(135deg,#a20e37,#7d1234) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
+      font-weight: 700;
+    }
+    .card:has(#searchInput) #clearSearchBtn {
+      min-width: 48px;
+      border-radius: 0 10px 10px 0;
+    }
+    .card:has(#searchInput) #exactMatchBtn,
+    .card:has(#searchInput) #caseSensitiveBtn {
+      padding: 7px 13px;
+      border-color: #d8a6b5 !important;
+      border-radius: 9px !important;
+      color: #7d1234 !important;
+      background: #fff !important;
+      font-weight: 600;
+    }
+    @media(max-width:767px) {
+      .card:has(#searchInput) > .card-header { padding: 12px 14px !important; min-height: 58px; }
+      .card:has(#searchInput) > .card-header h5 { font-size: 1rem !important; }
+      .card:has(#searchInput) > .card-header h5 i { width: 32px; height: 32px; }
+      .card:has(#searchInput) > .card-body { padding: 12px !important; }
+      .card:has(#searchInput) .search-filters { padding: 12px 10px 4px; }
+    }
+
+
+
+    /* Premium maroon-and-gold Filter by Service panel */
+    .search-filters {
+      position: relative;
+      overflow: hidden;
+      padding: 0 14px 16px !important;
+      border: 1px solid rgba(162, 14, 55, .20) !important;
+      border-radius: 18px !important;
+      background: linear-gradient(145deg, #fff 0%, #fff8f5 55%, #fff1ed 100%) !important;
+      box-shadow: 0 8px 22px rgba(138, 21, 56, .09), inset 0 1px 0 #fff;
+    }
+    .search-filters > .form-label {
+      display: block;
+      margin: 0 -14px 15px !important;
+      padding: 13px 20px !important;
+      color: #fff !important;
+      font-size: 1.02rem !important;
+      font-weight: 800 !important;
+      letter-spacing: .2px;
+      background: linear-gradient(110deg, #710d2e 0%, #a20e37 58%, #7d1235 100%);
+      border-bottom: 2px solid #ffc43d;
+      box-shadow: 0 4px 12px rgba(138, 21, 56, .18);
+      position: relative;
+    }
+    .search-filters > .form-label::before {
+      content: '\\f0b0';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      margin-right: 10px;
+      border-radius: 50%;
+      color: #7d1235;
+      background: linear-gradient(135deg, #fff7d2, #ffc43d);
+      box-shadow: 0 2px 7px rgba(0,0,0,.15);
+    }
+    .search-filters .filter-badge {
+      position: relative;
+      overflow: hidden;
+      min-height: 48px !important;
+      height: 50px !important;
+      padding: 6px 15px 6px 10px !important;
+      margin: 0 7px 8px 0 !important;
+      gap: 9px !important;
+      border: 1px solid rgba(162,14,55,.19) !important;
+      border-radius: 16px !important;
+      color: #501022 !important;
+      background: linear-gradient(145deg, #fff 0%, #fffaf6 100%) !important;
+      box-shadow: 0 4px 10px rgba(138,21,56,.09), inset 0 1px 0 #fff;
+      font-weight: 650 !important;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease !important;
+    }
+    .search-filters .filter-badge::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(#ffc43d, #a20e37);
+    }
+    .search-filters .filter-badge:hover,
+    .search-filters .filter-badge.active {
+      color: #fff !important;
+      background: linear-gradient(135deg, #7d1235, #a20e37) !important;
+      border-color: #ffc43d !important;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 15px rgba(138,21,56,.2) !important;
+    }
+    .search-filters .filter-badge .filter-logo {
+      width: 32px !important;
+      height: 32px !important;
+      flex: 0 0 32px !important;
+      object-fit: contain;
+      padding: 2px;
+      border-radius: 8px !important;
+      background: #fff;
+      box-shadow: 0 1px 5px rgba(0,0,0,.07);
+    }
+    .search-filters .filter-badge .filter-logo.aadhaar-filter-logo {
+      width: 36px !important;
+      height: 36px !important;
+      flex-basis: 36px !important;
+    }
+    @media (max-width: 768px) {
+      .search-filters { padding: 0 10px 12px !important; }
+      .search-filters > .form-label { margin-left: -10px !important; margin-right: -10px !important; }
+      .search-filters .filter-badge { margin-right: 5px !important; padding-right: 11px !important; }
+    }
+
+  
+    /* Slightly enlarged PNB logo to match the approved header reference */
+    .navbar-brand img { height: 56px; max-width: 250px; margin-right: 16px; }
+    @media (max-width: 768px) {
+      .navbar-brand img { height: 42px; max-width: 145px; margin-right: 9px; }
+    }
+
+
+    /* Final premium Filter by Service header — matching the approved maroon/gold reference */
+    .search-filters {
+      padding: 0 14px 16px !important;
+      border: 1px solid rgba(162,14,55,.22) !important;
+      border-radius: 22px !important;
+      background: linear-gradient(180deg,#fff 0%,#fffaf7 58%,#fff0eb 100%) !important;
+      box-shadow: 0 10px 24px rgba(125,18,53,.10), inset 0 1px 0 #fff !important;
+    }
+    .search-filters > .form-label {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      display: flex !important;
+      align-items: center;
+      min-height: 62px;
+      margin: 0 -14px 16px !important;
+      padding: 12px 22px !important;
+      border-radius: 20px 20px 0 0;
+      border-bottom: 3px solid #ffc43d !important;
+      background: linear-gradient(105deg,#690c2b 0%,#a20e37 52%,#790d32 100%) !important;
+      color: #fff !important;
+      font-size: 1.08rem !important;
+      font-weight: 800 !important;
+      letter-spacing: .25px;
+      text-shadow: 0 1px 2px rgba(0,0,0,.18);
+      box-shadow: 0 5px 14px rgba(125,18,53,.2) !important;
+    }
+    .search-filters > .form-label::before {
+      content: '\\f0b0';
+      position: relative;
+      z-index: 2;
+      flex: 0 0 38px;
+      width: 38px;
+      height: 38px;
+      margin-right: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 50%;
+      color: #7d1235 !important;
+      background: linear-gradient(145deg,#fff9d9,#ffc43d) !important;
+      box-shadow: 0 0 0 4px rgba(255,196,61,.12), 0 3px 8px rgba(0,0,0,.18);
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+    }
+    .search-filters > .form-label::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      right: -25px;
+      top: -42px;
+      width: 43%;
+      height: 145px;
+      border-radius: 0 0 0 100%;
+      transform: skewX(-22deg) rotate(-4deg);
+      background: linear-gradient(160deg,transparent 0 36%,rgba(255,196,61,.06) 37% 42%,rgba(255,196,61,.95) 43% 46%,rgba(255,255,255,.13) 47% 50%,transparent 51% 57%,rgba(255,196,61,.24) 58% 61%,transparent 62%);
+      pointer-events: none;
+    }
+    .search-filters .filter-badge {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: flex-start;
+      position: relative;
+      overflow: hidden;
+      min-height: 52px !important;
+      height: 52px !important;
+      padding: 5px 38px 5px 10px !important;
+      margin: 0 8px 8px 0 !important;
+      gap: 9px !important;
+      border: 1px solid rgba(162,14,55,.19) !important;
+      border-radius: 17px !important;
+      color: #541024 !important;
+      background: linear-gradient(145deg,#fff 0%,#fffaf5 100%) !important;
+      box-shadow: 0 5px 12px rgba(138,21,56,.10), inset 0 1px 0 #fff !important;
+      font-weight: 750 !important;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease !important;
+    }
+    .search-filters .filter-badge::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg,#ffc43d,#a20e37);
+    }
+    .search-filters .filter-badge::after {
+      content: '\\f105';
+      position: absolute;
+      right: 7px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 27px;
+      height: 27px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,196,61,.85);
+      border-radius: 50%;
+      color: #fff;
+      background: linear-gradient(135deg,#a20e37,#740d30);
+      box-shadow: 0 2px 5px rgba(125,18,53,.2);
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      font-size: 17px;
+      line-height: 1;
+    }
+    .search-filters .filter-badge .filter-logo {
+      width: 34px !important;
+      height: 34px !important;
+      flex: 0 0 34px !important;
+      object-fit: contain;
+      padding: 2px;
+      border-radius: 8px !important;
+      background: #fff;
+      box-shadow: 0 1px 5px rgba(0,0,0,.08);
+    }
+    .search-filters .filter-badge .filter-logo.aadhaar-filter-logo {
+      width: 36px !important;
+      height: 36px !important;
+      flex-basis: 36px !important;
+    }
+    .search-filters .filter-badge:hover,
+    .search-filters .filter-badge.active {
+      color: #fff !important;
+      background: linear-gradient(135deg,#790d32,#a20e37) !important;
+      border-color: #ffc43d !important;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 17px rgba(138,21,56,.22) !important;
+    }
+    .search-filters .filter-badge:hover::after,
+    .search-filters .filter-badge.active::after {
+      color: #7d1235;
+      background: linear-gradient(135deg,#fff7d2,#ffc43d);
+    }
+    @media (max-width: 768px) {
+      .search-filters { padding: 0 10px 12px !important; border-radius: 16px !important; }
+      .search-filters > .form-label { min-height: 54px; margin-left: -10px !important; margin-right: -10px !important; padding: 9px 14px !important; font-size: .98rem !important; }
+      .search-filters > .form-label::before { width: 32px; height: 32px; flex-basis: 32px; margin-right: 9px; }
+      .search-filters .filter-badge { height: 48px !important; min-height: 48px !important; margin-right: 5px !important; padding-right: 34px !important; }
+      .search-filters .filter-badge .filter-logo { width: 30px !important; height: 30px !important; flex-basis: 30px !important; }
+      .search-filters .filter-badge::after { width: 24px; height: 24px; right: 5px; }
+    }
+
+
+    /* Screenshot 2 match: compact premium filter header and all eight services in one row */
+    .search-filters {
+      padding: 0 10px 14px !important;
+      border: 1px solid rgba(162,14,55,.22) !important;
+      border-radius: 22px !important;
+      background: linear-gradient(180deg,#fff 0%,#fffaf7 58%,#fff0eb 100%) !important;
+      box-shadow: 0 8px 20px rgba(125,18,53,.09), inset 0 1px 0 #fff !important;
+      overflow: hidden !important;
+    }
+    .search-filters > .form-label {
+      min-height: 82px !important;
+      margin: 0 -10px 14px !important;
+      padding: 12px 28px !important;
+      border-radius: 20px 20px 0 0 !important;
+      border-bottom: 3px solid #ffc43d !important;
+      background: linear-gradient(105deg,#690c2b 0%,#a20e37 50%,#790d32 100%) !important;
+      font-size: 1.45rem !important;
+      letter-spacing: .15px !important;
+    }
+    .search-filters > .form-label::before {
+      content: "\f0b0" !important;
+      font-family: 'Font Awesome 5 Free' !important;
+      font-weight: 900 !important;
+      flex: 0 0 44px !important;
+      width: 44px !important;
+      height: 44px !important;
+      margin-right: 16px !important;
+      color: #7d1235 !important;
+      background: linear-gradient(145deg,#fff9d9,#ffc43d) !important;
+      border: 1px solid rgba(255,255,255,.75) !important;
+      box-shadow: 0 0 0 4px rgba(255,196,61,.12),0 3px 8px rgba(0,0,0,.18) !important;
+    }
+    .search-filters > .form-label::after {
+      right: -20px !important;
+      top: -55px !important;
+      width: 48% !important;
+      height: 175px !important;
+      background: linear-gradient(160deg,transparent 0 34%,rgba(255,196,61,.06) 35% 40%,rgba(255,196,61,.98) 41% 44%,rgba(255,255,255,.15) 45% 48%,transparent 49% 55%,rgba(255,196,61,.28) 56% 60%,transparent 61%) !important;
+    }
+    .search-filters > div:not(.form-label) {
+      display: grid !important;
+      grid-template-columns: repeat(8,minmax(0,1fr)) !important;
+      gap: 10px !important;
+      align-items: stretch !important;
+      width: 100% !important;
+    }
+    .search-filters .filter-badge {
+      box-sizing: border-box !important;
+      display: inline-flex !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      min-height: 66px !important;
+      height: 66px !important;
+      margin: 0 !important;
+      padding: 6px 30px 6px 8px !important;
+      gap: 7px !important;
+      border-radius: 18px !important;
+      white-space: nowrap !important;
+      font-size: clamp(10px,.95vw,14px) !important;
+      line-height: 1.1 !important;
+      box-shadow: 0 5px 12px rgba(138,21,56,.10),inset 0 1px 0 #fff !important;
+    }
+    .search-filters .filter-badge::after {
+      width: 25px !important;
+      height: 25px !important;
+      right: 5px !important;
+      font-size: 16px !important;
+    }
+    .search-filters .filter-badge .filter-logo,
+    .search-filters .filter-badge .filter-logo.aadhaar-filter-logo {
+      width: 30px !important;
+      height: 30px !important;
+      flex: 0 0 30px !important;
+      padding: 2px !important;
+      border-radius: 7px !important;
+    }
+    @media (max-width: 1100px) {
+      .search-filters > div:not(.form-label) { grid-template-columns: repeat(4,minmax(0,1fr)) !important; }
+      .search-filters .filter-badge { font-size: 13px !important; }
+    }
+    @media (max-width: 600px) {
+      .search-filters { padding: 0 8px 10px !important; }
+      .search-filters > .form-label { min-height: 58px !important; margin: 0 -8px 10px !important; padding: 8px 14px !important; font-size: 1.05rem !important; }
+      .search-filters > .form-label::before { width: 32px !important; height: 32px !important; flex-basis: 32px !important; margin-right: 9px !important; }
+      .search-filters > div:not(.form-label) { grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 8px !important; }
+      .search-filters .filter-badge { height: 50px !important; min-height: 50px !important; font-size: 12px !important; padding-left: 6px !important; padding-right: 29px !important; gap: 5px !important; }
+      .search-filters .filter-badge .filter-logo,
+      .search-filters .filter-badge .filter-logo.aadhaar-filter-logo { width: 27px !important; height: 27px !important; flex-basis: 27px !important; }
+    }
+
+  
+
+    /* Final screenshot match: compact single-row service filter */
+    .search-filters {
+      padding: 0 10px 14px !important;
+      border: 1px solid rgba(162,14,55,.22) !important;
+      border-radius: 22px !important;
+      background: linear-gradient(180deg,#fff 0%,#fffaf7 58%,#fff0eb 100%) !important;
+      box-shadow: 0 8px 20px rgba(125,18,53,.09), inset 0 1px 0 #fff !important;
+      overflow: hidden !important;
+    }
+    .search-filters > .form-label {
+      min-height: 82px !important;
+      margin: 0 -10px 14px !important;
+      padding: 12px 28px !important;
+      border-radius: 20px 20px 0 0 !important;
+      border-bottom: 3px solid #ffc43d !important;
+      background: linear-gradient(105deg,#690c2b 0%,#a20e37 50%,#790d32 100%) !important;
+      font-size: 1.45rem !important;
+      letter-spacing: .15px !important;
+    }
+    .search-filters > .form-label::before {
+      content: "\f0b0" !important;
+      font-family: 'Font Awesome 5 Free' !important;
+      font-weight: 900 !important;
+      flex: 0 0 44px !important;
+      width: 44px !important;
+      height: 44px !important;
+      margin-right: 16px !important;
+      color: #7d1235 !important;
+      background: linear-gradient(145deg,#fff9d9,#ffc43d) !important;
+      border: 1px solid rgba(255,255,255,.75) !important;
+      box-shadow: 0 0 0 4px rgba(255,196,61,.12),0 3px 8px rgba(0,0,0,.18) !important;
+    }
+    .search-filters > .form-label::after {
+      right: -20px !important;
+      top: -55px !important;
+      width: 48% !important;
+      height: 175px !important;
+      background: linear-gradient(160deg,transparent 0 34%,rgba(255,196,61,.06) 35% 40%,rgba(255,196,61,.98) 41% 44%,rgba(255,255,255,.15) 45% 48%,transparent 49% 55%,rgba(255,196,61,.28) 56% 60%,transparent 61%) !important;
+    }
+    .search-filters > div:not(.form-label) {
+      display: grid !important;
+      grid-template-columns: repeat(8,minmax(0,1fr)) !important;
+      gap: 10px !important;
+      align-items: stretch !important;
+      width: 100% !important;
+    }
+    .search-filters .filter-badge {
+      box-sizing: border-box !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      position: relative !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      min-height: 66px !important;
+      height: 66px !important;
+      margin: 0 !important;
+      padding: 6px 30px 6px 8px !important;
+      gap: 6px !important;
+      border: 1px solid rgba(255,174,45,.9) !important;
+      border-radius: 18px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      color: #541024 !important;
+      background: linear-gradient(145deg,#fff 0%,#fffaf5 100%) !important;
+      font-size: clamp(9px,.86vw,13px) !important;
+      line-height: 1.1 !important;
+      font-weight: 750 !important;
+      box-shadow: 0 5px 12px rgba(138,21,56,.10),inset 0 1px 0 #fff !important;
+      transition: transform .2s ease,box-shadow .2s ease,border-color .2s ease !important;
+    }
+    .search-filters .filter-badge::before {
+      content: '' !important;
+      position: absolute !important;
+      left: 0 !important; top: 0 !important; bottom: 0 !important;
+      width: 4px !important;
+      background: linear-gradient(180deg,#ffc43d,#a20e37) !important;
+    }
+    .search-filters .filter-badge::after {
+      content: "\f105" !important;
+      position: absolute !important;
+      right: 6px !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      width: 24px !important;
+      height: 24px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border: 1px solid rgba(255,196,61,.85) !important;
+      border-radius: 50% !important;
+      color: #fff !important;
+      background: linear-gradient(135deg,#a20e37,#740d30) !important;
+      box-shadow: 0 2px 5px rgba(125,18,53,.2) !important;
+      font-family: 'Font Awesome 5 Free' !important;
+      font-weight: 900 !important;
+      font-size: 17px !important;
+      line-height: 1 !important;
+    }
+    .search-filters .filter-badge .filter-logo,
+    .search-filters .filter-badge .filter-logo.aadhaar-filter-logo {
+      width: 34px !important;
+      height: 34px !important;
+      flex: 0 0 34px !important;
+      min-width: 34px !important;
+      object-fit: contain !important;
+      padding: 2px !important;
+      border-radius: 8px !important;
+      background: #fff !important;
+      box-shadow: 0 1px 5px rgba(0,0,0,.08) !important;
+    }
+    .search-filters .filter-badge:hover,
+    .search-filters .filter-badge.active {
+      color: #fff !important;
+      background: linear-gradient(135deg,#790d32,#a20e37) !important;
+      border-color: #ffc43d !important;
+      transform: translateY(-2px) !important;
+      box-shadow: 0 8px 17px rgba(138,21,56,.22) !important;
+    }
+    .search-filters .filter-badge:hover::after,
+    .search-filters .filter-badge.active::after {
+      color: #7d1235 !important;
+      background: linear-gradient(135deg,#fff7d2,#ffc43d) !important;
+    }
+    @media (max-width: 900px) {
+      .search-filters > div:not(.form-label) {
+        display: flex !important;
+        gap: 9px !important;
+        overflow-x: auto !important;
+        padding: 0 2px 8px !important;
+        scrollbar-width: thin;
+      }
+      .search-filters .filter-badge {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        min-width: max-content !important;
+        padding-right: 36px !important;
+        font-size: 12px !important;
+      }
+      .search-filters > .form-label { min-height: 64px !important; font-size: 1.15rem !important; padding: 10px 16px !important; }
+      .search-filters > .form-label::before { width: 36px !important; height: 36px !important; flex-basis: 36px !important; margin-right: 10px !important; }
+    }
+
+
+
+    /* Final requested tweak: remove the arrow icons from the service tiles only */
+    .search-filters .filter-badge::after {
+      content: none !important;
+      display: none !important;
+    }
+    .search-filters .filter-badge {
+      padding-right: 8px !important;
+      justify-content: flex-start !important;
+      gap: 9px !important;
+    }
+    @media (min-width: 1101px) {
+      .search-filters > div:not(.form-label) {
+        grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+      }
+    }
+
+
+
+    /* Premium maroon-and-gold customer search bar */
+    .card:has(#searchInput) .input-group.mb-3 {
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      border: 2px solid #e9ad26;
+      border-radius: 20px !important;
+      background: linear-gradient(110deg, #8a1538 0%, #a20e37 12%, #fffaf1 12.2%, #ffffff 78%, #fbbc09 78.2%, #fff7dc 100%);
+      padding: 4px;
+      box-shadow: 0 8px 20px rgba(138,21,56,.14), inset 0 1px 0 rgba(255,255,255,.9);
+      filter: none;
+      min-height: 62px;
+    }
+    .card:has(#searchInput) #searchFilterLabel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 66px;
+      min-width: 66px;
+      padding: 0 !important;
+      border: 0 !important;
+      border-radius: 14px 0 0 14px !important;
+      color: #fbbc09 !important;
+      background: linear-gradient(145deg,#a20e37,#72102f) !important;
+    }
+    .card:has(#searchInput) #searchFilterLabel i {
+      color: #fbbc09 !important;
+      font-size: 1.45rem;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,.15));
+    }
+    .card:has(#searchInput) #searchInput {
+      min-width: 0;
+      min-height: 50px;
+      padding: 12px 18px;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: linear-gradient(180deg,#fff,#fffdf8) !important;
+      color: #4a2430;
+      font-size: 1rem;
+      box-shadow: inset 0 1px 3px rgba(122,17,48,.04) !important;
+    }
+    .card:has(#searchInput) #searchInput::placeholder { color: #74666a; opacity: 1; }
+    .card:has(#searchInput) #searchInput:focus {
+      border: 0 !important;
+      box-shadow: inset 0 0 0 2px rgba(251,188,9,.28) !important;
+      outline: none;
+    }
+    .card:has(#searchInput) #searchBtn {
+      min-width: 132px;
+      padding: 0 22px;
+      border: 1px solid #fbbc09 !important;
+      border-radius: 0 !important;
+      background: linear-gradient(135deg,#b20e3d 0%,#8a1538 55%,#70102e 100%) !important;
+      color: #fff !important;
+      font-weight: 800;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 2px 5px rgba(95,8,34,.18);
+      white-space: nowrap;
+    }
+    .card:has(#searchInput) #searchBtn:hover {
+      background: linear-gradient(135deg,#c31949,#8a1538) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 3px 8px rgba(95,8,34,.22);
+    }
+    .card:has(#searchInput) #clearSearchBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      margin-left: 5px;
+      border: 1px solid #aeb4bb !important;
+      border-radius: 0 13px 13px 0 !important;
+      background: linear-gradient(145deg,#737d87,#4c5661) !important;
+      color: #fff !important;
+      font-size: 1.1rem;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+    }
+    .card:has(#searchInput) #clearSearchBtn:hover { background: linear-gradient(145deg,#5f6973,#3d4650) !important; }
+    @media (max-width: 600px) {
+      .card:has(#searchInput) .input-group.mb-3 { min-height: 52px; padding: 3px; border-radius: 15px !important; }
+      .card:has(#searchInput) #searchFilterLabel { width: 42px; min-width: 42px; }
+      .card:has(#searchInput) #searchFilterLabel i { font-size: 1.1rem; }
+      .card:has(#searchInput) #searchInput { min-height: 44px; padding: 9px 8px; font-size: .88rem; }
+      .card:has(#searchInput) #searchBtn { min-width: 76px; padding: 0 9px; font-size: .85rem; }
+      .card:has(#searchInput) #clearSearchBtn { min-width: 38px; margin-left: 3px; }
+    }
+
+
+
+    /* Premium maroon-and-gold dropdown menu styling */
+    .three-dots-menu .dropdown-menu {
+      min-width: 290px;
+      max-width: min(360px, calc(100vw - 24px));
+      max-height: min(78vh, 680px);
+      overflow-y: auto;
+      padding: 8px;
+      border: 1px solid rgba(255, 193, 7, .75);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fffdf9 0%, #fff5ee 100%);
+      box-shadow: 0 16px 36px rgba(89, 8, 36, .28), 0 0 0 2px rgba(255, 215, 0, .12);
+      scrollbar-width: thin;
+      scrollbar-color: #a20e37 #fff0e5;
+    }
+    .three-dots-menu .dropdown-header {
+      margin: 4px 0 7px;
+      padding: 10px 13px;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: .2px;
+      background: linear-gradient(110deg, #690c2d 0%, #a20e37 56%, #780d31 100%);
+      border: 1px solid #f7c84a;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 3px 8px rgba(120,13,49,.16);
+    }
+    .three-dots-menu .dropdown-header::after {
+      content: '';
+      display: block;
+      height: 2px;
+      margin-top: 7px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #ffd44d, rgba(255,212,77,.05));
+    }
+    .three-dots-menu .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 42px;
+      margin: 4px 0;
+      padding: 9px 10px;
+      border: 1px solid rgba(162,14,55,.12);
+      border-left: 3px solid #d9a526;
+      border-radius: 10px;
+      color: #4b1727;
+      font-size: .92rem;
+      font-weight: 600;
+      background: rgba(255,255,255,.88);
+      box-shadow: 0 3px 8px rgba(92,11,40,.06);
+      transition: transform .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+    .three-dots-menu .dropdown-item:hover,
+    .three-dots-menu .dropdown-item:focus {
+      color: #7b0e31;
+      background: linear-gradient(100deg, #fff0c7, #fffaf4);
+      border-color: rgba(218,165,32,.65);
+      box-shadow: 0 5px 12px rgba(120,13,49,.13);
+      transform: translateX(2px);
+    }
+    .three-dots-menu .dropdown-item i {
+      flex: 0 0 24px;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 2px 0 0;
+      border-radius: 7px;
+      color: #fff;
+      background: linear-gradient(145deg, #a20e37, #6d0d2c);
+      box-shadow: 0 2px 4px rgba(90,8,35,.18);
+      font-size: 12px;
+    }
+    .three-dots-menu .dropdown-item::after {
+      content: '›';
+      margin-left: auto;
+      color: #a20e37;
+      font-size: 22px;
+      line-height: 1;
+      font-weight: 800;
+    }
+    .three-dots-menu .dropdown-item.text-danger { color: #b42332 !important; }
+    .three-dots-menu .dropdown-item.text-danger i { background: linear-gradient(145deg, #e04444, #a20e37); }
+    .three-dots-menu .dropdown-divider {
+      margin: 8px 4px;
+      border-top: 1px solid rgba(162,14,55,.18);
+    }
+    @media (max-width: 576px) {
+      .three-dots-menu .dropdown-menu { min-width: 275px; max-height: 72vh; }
+      .three-dots-menu .dropdown-item { min-height: 40px; font-size: .88rem; }
+    }
+
+</style>
+
+<style id="premium-all-service-forms">
+/* Premium maroon-and-gold styling for all service application forms */
+:root{--form-maroon:#8a1538;--form-deep:#650d2b;--form-gold:#ffbf35;--form-cream:#fffaf4;}
+.modal .modal-content{border:1px solid rgba(255,191,53,.85)!important;border-radius:18px!important;overflow:hidden;box-shadow:0 18px 55px rgba(83,8,34,.28),0 0 0 3px rgba(255,191,53,.12)!important;background:var(--form-cream);}
+.modal .modal-header{position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(115deg,#650d2b 0%,#a20e37 48%,#7b1033 100%)!important;color:#fff!important;padding:18px 24px!important;border-bottom:3px solid var(--form-gold)!important;min-height:64px;}
+.modal .modal-header:before{content:"";position:absolute;z-index:-1;right:7%;top:-75%;width:38%;height:240%;transform:rotate(-25deg);background:linear-gradient(90deg,transparent 0 25%,rgba(255,191,53,.9) 25% 28%,rgba(255,191,53,.2) 28% 34%,transparent 34% 40%,rgba(255,191,53,.32) 40% 45%,transparent 45%);pointer-events:none;}
+.modal .modal-title{font-weight:800;letter-spacing:.2px;text-shadow:0 1px 1px rgba(0,0,0,.15);position:relative;}
+.modal .modal-title i{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin-right:10px!important;border-radius:10px;background:linear-gradient(145deg,#ffd76a,#ffb923);color:#7a1032;padding:8px;box-shadow:0 2px 0 rgba(255,255,255,.4) inset;}
+.modal .modal-header .btn-close{opacity:1;filter:brightness(0) invert(1);border-radius:50%;padding:9px;box-shadow:0 0 0 1px rgba(255,255,255,.25);}
+.modal .modal-body{padding:24px!important;background:linear-gradient(180deg,#fffdfa,#fff7f2)!important;}
+.modal .modal-body h6{display:flex;align-items:center;gap:9px;padding:12px 14px;border-radius:10px;background:linear-gradient(90deg,#fff0e9,#fff8f3);border-left:4px solid var(--form-gold);color:var(--form-maroon)!important;font-weight:800;font-size:1rem;margin-bottom:18px!important;}
+.modal .form-label{display:block;color:#29252a;font-weight:700!important;margin-bottom:7px;font-size:.92rem;}
+.modal .form-control,.modal .form-select{min-height:44px;border:1px solid #e5c9c7!important;border-radius:9px!important;background-color:#fff!important;color:#28232a;box-shadow:0 2px 5px rgba(90,15,40,.035);padding:10px 13px;transition:border-color .18s,box-shadow .18s,background-color .18s;}
+.modal textarea.form-control{min-height:78px;}
+.modal .form-control:focus,.modal .form-select:focus{border-color:#d99b24!important;box-shadow:0 0 0 3px rgba(255,191,53,.22)!important;background:#fffdf9!important;outline:none;}
+.modal .form-control::placeholder{color:#88818a;opacity:1;}
+.modal .required-field:after{color:#dc3545;}
+.modal .modal-footer{padding:16px 24px!important;background:#fffaf6;border-top:1px solid #f1d7d1!important;gap:8px;}
+.modal .modal-footer .btn,.modal .modal-body .btn-pnb-primary{border-radius:9px!important;font-weight:700;padding:10px 19px;transition:transform .16s,box-shadow .16s;}
+.modal .modal-footer .btn:hover,.modal .modal-body .btn-pnb-primary:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(94,12,39,.18);}
+.modal .modal-footer .btn-secondary{background:linear-gradient(135deg,#747c84,#4f5962)!important;border:1px solid #6e747a!important;color:#fff!important;}
+.modal .modal-footer .btn-pnb-primary,.modal .modal-body .btn-pnb-primary{background:linear-gradient(110deg,#790d30,#a20e37 60%,#780d30)!important;border:1px solid #f5bb35!important;color:#fff!important;box-shadow:0 3px 0 rgba(255,191,53,.24);}
+.modal .payment-details{border:1px solid #f0d7c9;border-radius:12px;padding:16px;background:linear-gradient(145deg,#fffaf5,#fff2eb);}
+@media(max-width:576px){.modal .modal-dialog{margin:10px!important}.modal .modal-body{padding:16px!important}.modal .modal-header{padding:14px 16px!important}.modal .modal-footer{padding:12px 16px!important}.modal .modal-footer .btn{flex:1;min-height:44px}.modal .form-control,.modal .form-select{min-height:42px}}
+
+    /* Dashboard counters are clickable shortcuts to the complete service data */
+    #serviceStats .dashboard-service-card { cursor: pointer; }
+    #serviceStats .dashboard-service-card:focus-visible {
+      outline: 3px solid #8A1538;
+      outline-offset: 3px;
+    }
+</style>
+
 </head>
 <body>
   <!-- Login Modal -->
@@ -754,42 +2011,42 @@
 
     <!-- Service Stats Cards -->
     <div class="service-stats mb-3" id="serviceStats">
-      <div class="stat-card">
+      <div class="stat-card dashboard-service-card" role="button" tabindex="0" aria-label="View all Passport data" onclick="filterByService('passport')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterByService('passport')}">
         <span class="stat-icon"><i class="fas fa-passport"></i></span>
         <div class="stat-label">Passport</div>
         <div class="stat-value" id="statPassport">0</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card dashboard-service-card" role="button" tabindex="0" aria-label="View all EPFO data" onclick="filterByService('epfo')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterByService('epfo')}">
         <span class="stat-icon"><i class="fas fa-file-invoice"></i></span>
         <div class="stat-label">EPFO</div>
         <div class="stat-value" id="statEPFO">0</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card dashboard-service-card" role="button" tabindex="0" aria-label="View all Aadhaar data" onclick="filterByService('aadhaar')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterByService('aadhaar')}">
         <span class="stat-icon"><i class="fas fa-id-card"></i></span>
         <div class="stat-label">Aadhaar</div>
         <div class="stat-value" id="statAadhaar">0</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card dashboard-service-card" role="button" tabindex="0" aria-label="View all PAN data" onclick="filterByService('pan')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterByService('pan')}">
         <span class="stat-icon"><i class="fas fa-credit-card"></i></span>
         <div class="stat-label">PAN</div>
         <div class="stat-value" id="statPAN">0</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card dashboard-service-card" role="button" tabindex="0" aria-label="View all eSarvish data" onclick="filterByService('esarvish')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterByService('esarvish')}">
         <span class="stat-icon"><i class="fas fa-globe"></i></span>
         <div class="stat-label">eSarvish</div>
         <div class="stat-value" id="statESarvish">0</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card dashboard-service-card" role="button" tabindex="0" aria-label="View all License data" onclick="filterByService('license')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterByService('license')}">
         <span class="stat-icon"><i class="fas fa-id-card-alt"></i></span>
         <div class="stat-label">License</div>
         <div class="stat-value" id="statLicense">0</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card dashboard-service-card" role="button" tabindex="0" aria-label="View all PNB Account data" onclick="filterByService('pnb_account')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterByService('pnb_account')}">
         <span class="stat-icon"><i class="fas fa-university"></i></span>
         <div class="stat-label">PNB Account</div>
         <div class="stat-value" id="statPNBAccount">0</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card dashboard-service-card" role="button" tabindex="0" aria-label="View all UPCL data" onclick="filterByService('upcl')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();filterByService('upcl')}">
         <span class="stat-icon"><i class="fas fa-bolt"></i></span>
         <div class="stat-label">UPCL</div>
         <div class="stat-value" id="statUPCL">0</div>
@@ -2014,8 +3271,9 @@
                 document.getElementById('passportTotal').value = cust.total || 0;
                 document.getElementById('passportPaid').value = cust.paid || 0;
                 document.getElementById('passportPending').value = cust.pending || 0;
+                document.getElementById('passportDob').value = cust.dateOfBirth || cust.dob || cust.birthDate || '';
                 document.getElementById('passportApplicationNo').value = cust.applicationNo || '';
-                document.getElementById('passportPassword').value = cust.password || '';
+                // The Passport form has no password field; avoid accessing a missing element.
                 passportModal.show();
                 break;
               case 'epfo':
@@ -2915,49 +4173,56 @@
         }
       };
 
-      window.filterByService = function(service) {
+      window.filterByService = async function(service) {
+        const validServices = ['all','pnb_account','passport','epfo','aadhaar','pan','esarvish','license','upcl'];
+        if (!validServices.includes(service)) service = 'all';
+
+        // Always finish loading the latest Firebase records before rendering.
+        // This fixes clicks that previously showed an empty list while data was still loading.
+        if (elements.allApplicationsCard) elements.allApplicationsCard.classList.remove('d-none');
+        if (elements.applicationListBody) {
+          elements.applicationListBody.innerHTML = emptyRowMessage('Loading customer data...', service);
+        }
+        try {
+          if (!state.dataReady || state.dataLoading || !Array.isArray(state.allCustomersData) || !state.allCustomersData.length) {
+            await loadFastCustomerData();
+          }
+        } catch (error) {
+          console.error('Could not load service records:', error);
+          if (elements.applicationListBody) {
+            elements.applicationListBody.innerHTML = emptyRowMessage('Data load failed. Check Firebase connection and try again.', service);
+          }
+          return;
+        }
+
         setServiceFilter(service);
-        if (elements.allApplicationsCard) {
-          elements.allApplicationsCard.classList.remove('d-none');
-        }
-        
         const serviceNames = {
-          'passport': 'Passport',
-          'epfo': 'EPFO',
-          'aadhaar': 'Aadhaar',
-          'pan': 'PAN Card',
-          'esarvish': 'eSarvish',
-          'license': 'Driving License',
-          'pnb_account': 'PNB Account',
-          'upcl': 'UPCL',
-          'all': 'All Customers'
+          'passport': 'Passport', 'epfo': 'EPFO', 'aadhaar': 'Aadhaar',
+          'pan': 'PAN Card', 'esarvish': 'eSarvish', 'license': 'Driving License',
+          'pnb_account': 'PNB Account', 'upcl': 'UPCL', 'all': 'All Customers'
         };
-        
-        if (elements.serviceTypeBadge) {
-          elements.serviceTypeBadge.textContent = serviceNames[service] || (service + ' Customers');
-        }
-        if (elements.serviceTypeTitle) {
-          elements.serviceTypeTitle.textContent = (serviceNames[service] || service) + ' Customers';
-        }
+        if (elements.serviceTypeBadge) elements.serviceTypeBadge.textContent = serviceNames[service] || 'All Customers';
+        if (elements.serviceTypeTitle) elements.serviceTypeTitle.textContent = (serviceNames[service] || service) + ' Customers';
         updateTableHeaders(service);
         loadFilteredCustomers(service);
+
+        // Bring the full matching-data table into view after the card is clicked.
+        if (elements.allApplicationsCard) {
+          elements.allApplicationsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       };
 
       function loadFilteredCustomers(service) {
-        // Service filters use the same in-memory cache as search.
-        // This prevents a Firebase request every time a service card is clicked.
         const source = Array.isArray(state.allCustomersData) ? state.allCustomersData : [];
         let filtered = source;
-
         if (service !== 'all') {
-          filtered = source.filter(record => record.serviceType === service);
+          filtered = source.filter(record => String(record.serviceType || '').toLowerCase() === service.toLowerCase());
         }
-
         if (elements.applicationListBody) {
           if (!filtered.length) {
             elements.applicationListBody.innerHTML = state.dataLoading
-              ? emptyRowMessage('Loading customer data...')
-              : emptyRowMessage('No customers found', service);
+              ? emptyRowMessage('Loading customer data...', service)
+              : emptyRowMessage('No records found for ' + (service || 'this service'), service);
           } else {
             elements.applicationListBody.innerHTML = filtered.map(createTableRow).join('');
             addTableEventListeners();
