@@ -1876,6 +1876,56 @@
     }
 </style>
 
+
+<style id="premium-icon-form-style">
+/* Consistent screenshot-inspired maroon/gold application forms for every service */
+.modal .modal-dialog { max-width: min(1120px, calc(100vw - 24px)); }
+.modal .modal-content { border: 2px solid #fbbc09 !important; border-radius: 22px !important; }
+.modal .modal-header { min-height: 86px; padding: 18px 24px !important; }
+.modal .modal-title { font-size: clamp(1.15rem, 2vw, 1.8rem); }
+.modal .modal-body { padding: 24px 28px !important; }
+.modal .modal-body h6 {
+  min-height: 54px; padding: 12px 18px !important; border-left: 6px solid #fbbc09 !important;
+  border-radius: 14px !important; background: linear-gradient(100deg,#fff0c9,#fff9e8 80%,#f8dba0) !important;
+  font-size: clamp(1rem,1.5vw,1.35rem) !important;
+}
+.modal .form-label { color:#8a1538 !important; font-size: clamp(.9rem,1.2vw,1.1rem) !important; font-weight:800 !important; }
+.modal .premium-field-control {
+  display:flex; align-items:stretch; min-width:0; overflow:hidden; border:2px solid #fbbc09;
+  border-radius:15px; background:#fff; box-shadow:0 5px 12px rgba(138,21,56,.10);
+}
+.modal .premium-field-icon {
+  display:flex; align-items:center; justify-content:center; flex:0 0 64px; width:64px;
+  color:#ffd43b; background:linear-gradient(145deg,#a20e37,#700d2d);
+  border-right:3px solid #fbbc09; font-size:1.35rem;
+}
+.modal .premium-field-control .form-control,
+.modal .premium-field-control .form-select,
+.modal .premium-field-control textarea.form-control {
+  flex:1; min-width:0; min-height:58px; border:0 !important; border-radius:0 !important;
+  box-shadow:none !important; padding:13px 16px; font-size:clamp(.95rem,1.25vw,1.15rem);
+  background:#fff !important;
+}
+.modal .premium-field-control .form-control:focus,
+.modal .premium-field-control .form-select:focus { outline:2px solid #ffd15c; outline-offset:-3px; }
+.modal .premium-field-control textarea.form-control { min-height:90px; }
+.modal .premium-field-control input[type="file"] { padding:12px; }
+.modal .premium-field-control input[type="checkbox"],
+.modal .premium-field-control input[type="radio"] { flex:0 0 auto; min-height:auto; margin:16px; }
+.modal .premium-field-control:focus-within { box-shadow:0 0 0 3px rgba(251,188,9,.22),0 7px 15px rgba(138,21,56,.12); }
+.modal .modal-footer { border-top:1px solid #fbbc09 !important; padding:16px 24px !important; }
+.modal .modal-footer .btn { min-height:48px; font-weight:800; border-radius:12px !important; }
+.modal .modal-footer .btn-pnb-primary { background:linear-gradient(110deg,#a20e37,#760c2d) !important; border:2px solid #fbbc09 !important; }
+.modal .modal-footer .btn-secondary { background:linear-gradient(110deg,#69727e,#444b55) !important; border:2px solid #fbbc09 !important; color:#fff !important; }
+@media(max-width:767px) {
+  .modal .modal-body { padding:15px !important; }
+  .modal .modal-header { min-height:64px; padding:13px 16px !important; }
+  .modal .premium-field-icon { flex-basis:48px; width:48px; font-size:1.1rem; }
+  .modal .premium-field-control .form-control,.modal .premium-field-control .form-select { min-height:48px; padding:10px 11px; font-size:.95rem; }
+  .modal .modal-footer { padding:12px 14px !important; }
+}
+</style>
+
 </head>
 <body>
   <!-- Login Modal -->
@@ -2375,27 +2425,27 @@
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Full Name</label>
-                <input type="text" class="form-control uppercase" id="aadhaarName" placeholder="CUSTOMER NAME" required data-aadhaar-auto="true" inputmode="numeric">
+                <input type="text" class="form-control uppercase" id="aadhaarName" placeholder="CUSTOMER NAME" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold">Father/Husband Name</label>
-                <input type="text" class="form-control uppercase" id="aadhaarFatherName" placeholder="FATHER NAME" data-aadhaar-auto="true" inputmode="numeric">
+                <input type="text" class="form-control uppercase" id="aadhaarFatherName" placeholder="FATHER NAME">
               </div>
             </div>
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Mobile Number (10 digits)</label>
-                <input type="tel" class="form-control" id="aadhaarMobile" placeholder="Mobile Number" maxlength="10" required data-aadhaar-auto="true" inputmode="numeric">
+                <input type="tel" class="form-control" id="aadhaarMobile" placeholder="Mobile Number" maxlength="10" required inputmode="numeric">
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-bold required-field">Aadhar Number</label>
                 <input type="text" class="form-control" id="aadhaarNumber"
                        placeholder="Enter 12 digit Aadhaar Number"
-                       maxlength="12" inputmode="numeric" autocomplete="off" required data-aadhaar-auto="true" inputmode="numeric">
+                       maxlength="12" inputmode="numeric" autocomplete="off" required>
                 <div id="aadhaarValidationMessage" class="form-text"></div>
               </div>
             </div>
-            <input type="hidden" id="aadhaarId" data-aadhaar-auto="true" inputmode="numeric">
+            <input type="hidden" id="aadhaarId">
           </form>
         </div>
         <div class="modal-footer">
@@ -3235,20 +3285,20 @@
 
       // Add table event listeners
       function addTableEventListeners() {
+        // Assign handlers directly so table refreshes never stack duplicate listeners.
         document.querySelectorAll('.edit-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
+          btn.onclick = (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            const custId = e.currentTarget.dataset.id;
-            const custType = e.currentTarget.dataset.type;
-            openEditModal(custId, custType);
-          });
+            openEditModal(e.currentTarget.dataset.id, e.currentTarget.dataset.type);
+          };
         });
-
         document.querySelectorAll('.delete-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
+          btn.onclick = (e) => {
+            e.preventDefault();
             e.stopPropagation();
             beginSecureDelete([{ id: e.currentTarget.dataset.id, type: e.currentTarget.dataset.type }], false);
-          });
+          };
         });
       }
 
@@ -3256,6 +3306,10 @@
       function openEditModal(custId, custType) {
         const collection = (custType === 'pnb_account') ? "customers" : "applications";
         
+        if (!db) {
+          showAlert('Firebase not connected. Please check your connection.', 'danger');
+          return;
+        }
         db.collection(collection).doc(custId).get().then((doc) => {
           if (doc.exists) {
             const cust = doc.data();
@@ -3314,7 +3368,8 @@
                 document.getElementById('esarvishPaid').value = cust.paid || 0;
                 document.getElementById('esarvishPending').value = cust.pending || 0;
                 document.getElementById('esarvishApplicationNo').value = cust.applicationNo || '';
-                document.getElementById('esarvishPassword').value = cust.password || '';
+                // eSarvish form has no password input; never access a missing element.
+                calculateESarvishPending();
                 esarvishModal.show();
                 break;
               case 'license':
@@ -3341,7 +3396,12 @@
                                 pnbAccountModal.show();
                 break;
             }
+          } else {
+            showAlert('This record was not found. Refresh the list and try again.', 'warning');
           }
+        }).catch((error) => {
+          console.error('Error loading record for editing:', error);
+          showAlert('Could not load this record for editing. Check Firebase connection and try again.', 'danger');
         });
       }
 
@@ -4955,6 +5015,24 @@
     });
   </script>
 
+<script id="aadhaar-mobile-input-fix">
+/* Aadhaar form mobile number: numeric, maximum 10 digits; Aadhaar checksum applies only to the Aadhaar number field. */
+(function(){
+  function setupAadhaarMobile(){
+    var mobile = document.getElementById('aadhaarMobile');
+    if (!mobile || mobile.dataset.mobileDigitsReady === '1') return;
+    mobile.dataset.mobileDigitsReady = '1';
+    mobile.setAttribute('inputmode', 'numeric');
+    mobile.setAttribute('maxlength', '10');
+    mobile.addEventListener('input', function(){
+      mobile.value = mobile.value.replace(/\D/g, '').slice(0, 10);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setupAadhaarMobile);
+  else setupAadhaarMobile();
+})();
+</script>
+
 <!-- Aadhaar automatic validation: format + Verhoeff checksum -->
 <script>
 (function () {
@@ -5217,5 +5295,209 @@
   }
 })();
 </script>
+
+<style id="compact-all-application-forms">
+/* Compact all application modals so the forms do not look oversized. */
+.modal .modal-dialog.modal-lg { max-width: 780px; }
+.modal .modal-content { border-radius: 14px; }
+.modal .modal-header { padding: 10px 16px !important; min-height: 48px; }
+.modal .modal-header .modal-title { font-size: 1.05rem !important; font-weight: 800; }
+.modal .modal-body { padding: 14px 18px !important; }
+.modal .modal-body h6 { font-size: .92rem !important; margin-top: 8px !important; margin-bottom: 9px !important; }
+.modal .modal-body .row.mb-3 { margin-bottom: 10px !important; }
+.modal .modal-body .form-label { font-size: .82rem !important; margin-bottom: 4px !important; }
+.modal .modal-body .form-control,
+.modal .modal-body .form-select { min-height: 38px !important; height: 38px; padding: 6px 10px !important; font-size: .88rem !important; border-radius: 8px !important; }
+.modal .modal-body .premium-field-control { min-height: 38px; }
+.modal .modal-body .premium-field-control .form-control,
+.modal .modal-body .premium-field-control .form-select { height: 38px !important; min-height: 38px !important; }
+.modal .modal-body .premium-field-icon { width: 38px !important; min-width: 38px !important; font-size: 14px !important; }
+.modal .modal-body .payment-details { padding: 12px !important; margin: 10px 0 !important; }
+.modal .modal-footer { padding: 10px 16px !important; gap: 8px; }
+.modal .modal-footer .btn { padding: 7px 14px !important; font-size: .88rem !important; border-radius: 8px; }
+@media (max-width: 767px) {
+  .modal .modal-dialog { margin: 8px !important; }
+  .modal .modal-body { padding: 11px !important; }
+  .modal .modal-body .row.mb-3 { margin-bottom: 8px !important; }
+  .modal .modal-body .form-label { font-size: .78rem !important; }
+  .modal .modal-body .form-control,
+  .modal .modal-body .form-select { font-size: .84rem !important; }
+  .modal .modal-footer { padding: 9px 11px !important; }
+}
+</style>
+
+<script id="premium-form-icons-and-edit-fixes">
+(function () {
+  function iconFor(el) {
+    const key = ((el.id || '') + ' ' + (el.name || '') + ' ' +
+      (el.closest('.mb-3,.col-md-6,.col-md-4,.col-12')?.querySelector('label')?.textContent || '')).toLowerCase();
+    if (/father|husband|parent/.test(key)) return 'fa-user-group';
+    if (/mobile|phone|contact/.test(key)) return 'fa-mobile-screen-button';
+    if (/aadhaar|aadhar|uid/.test(key)) return 'fa-fingerprint';
+    if (/account|bank/.test(key)) return 'fa-building-columns';
+    if (/password|pass/.test(key)) return 'fa-lock';
+    if (/date|dob|birth/.test(key)) return 'fa-calendar-days';
+    if (/amount|total|paid|pending|fee/.test(key)) return 'fa-indian-rupee-sign';
+    if (/application|pan|license|pfno|billno|number|no/.test(key)) return 'fa-hashtag';
+    if (/address/.test(key)) return 'fa-location-dot';
+    if (/email/.test(key)) return 'fa-envelope';
+    if (/file|upload/.test(key)) return 'fa-upload';
+    if (/name/.test(key)) return 'fa-user';
+    if (/service|type|category/.test(key)) return 'fa-list-check';
+    return 'fa-pen-to-square';
+  }
+  function decorateFields() {
+    document.querySelectorAll('.modal .modal-body input.form-control, .modal .modal-body select.form-select, .modal .modal-body textarea.form-control').forEach(function(el) {
+      if (el.type === 'hidden' || el.type === 'checkbox' || el.type === 'radio' || el.dataset.premiumDecorated === '1') return;
+      if (el.closest('.premium-field-control') || el.closest('.input-group')) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'premium-field-control';
+      const icon = document.createElement('span');
+      icon.className = 'premium-field-icon';
+      icon.setAttribute('aria-hidden','true');
+      const glyph = document.createElement('i');
+      glyph.className = 'fas ' + iconFor(el);
+      icon.appendChild(glyph);
+      el.parentNode.insertBefore(wrap, el);
+      wrap.appendChild(icon);
+      wrap.appendChild(el);
+      el.dataset.premiumDecorated = '1';
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decorateFields);
+  else decorateFields();
+
+  // Ensure edit buttons always retrieve the full saved record and report Firebase errors.
+  const originalOpenEditModal = window.openEditModal;
+  if (typeof originalOpenEditModal === 'function') {
+    window.openEditModal = function(id, type) {
+      try { return originalOpenEditModal(id, type); }
+      catch (err) {
+        console.error('Unable to open application for editing:', err);
+        if (typeof window.showAlert === 'function') window.showAlert('Could not open this record. Please check the connection and try again.', 'danger');
+      }
+    };
+  }
+})();
+</script>
+
+<style id="premium-maroon-gold-data-table">
+/* Premium compact data tables: maroon + gold, keeping existing data/actions intact. */
+:root { --table-maroon:#8A1538; --table-maroon-dark:#650d2a; --table-gold:#ffc928; --table-cream:#fff8e9; }
+#allApplicationsCard,
+#searchResults > .table-responsive,
+#searchResultsTable { border-radius:18px !important; overflow:hidden; }
+#allApplicationsCard {
+  border:1px solid rgba(255,201,40,.75) !important;
+  box-shadow:0 10px 28px rgba(101,13,42,.12), inset 0 1px 0 #fff !important;
+  background:linear-gradient(180deg,#fff 0%,#fffaf0 100%) !important;
+}
+#allApplicationsCard > .card-header {
+  position:relative; overflow:hidden; padding:15px 20px !important;
+  color:#fff !important;
+  background:linear-gradient(110deg,#650d2a 0%,#a31243 48%,#710d2d 100%) !important;
+  border-bottom:3px solid var(--table-gold) !important;
+}
+#allApplicationsCard > .card-header h5 { color:#fff !important; font-weight:800 !important; letter-spacing:.2px; }
+#allApplicationsCard > .card-header h5 i { color:#ffd84f !important; }
+#allApplicationsCard #serviceTypeBadge {
+  color:#74102f !important; background:linear-gradient(180deg,#fff3b6,#ffd54a) !important;
+  border:1px solid #ffcf36; border-radius:999px; padding:7px 13px; font-weight:800;
+}
+#allApplicationsCard #closeAllApplicationsBtn { border:1px solid #ffe08a !important; border-radius:9px; font-weight:700; }
+#allApplicationsCard .card-body { padding:12px 14px 16px !important; background:transparent; }
+#applicationsTable, #searchResultsTable {
+  width:100%; margin:0 !important; border-collapse:separate !important; border-spacing:0 7px !important;
+  color:#20202a; font-size:.91rem; vertical-align:middle;
+}
+#applicationsTable thead th, #searchResultsTable thead th {
+  color:#fff !important; background:linear-gradient(115deg,#760e30,#98123e 55%,#650d2a) !important;
+  padding:15px 12px !important; border-top:1px solid #ffd44b !important;
+  border-bottom:2px solid #ffc928 !important; border-right:1px solid rgba(255,215,100,.45) !important;
+  font-weight:800 !important; white-space:nowrap; text-transform:none; font-size:.88rem;
+}
+#applicationsTable thead th:first-child, #searchResultsTable thead th:first-child { border-radius:11px 0 0 11px; }
+#applicationsTable thead th:last-child, #searchResultsTable thead th:last-child { border-radius:0 11px 11px 0; border-right:0 !important; }
+#applicationsTable tbody tr, #searchResultsTable tbody tr { box-shadow:0 2px 8px rgba(88,20,42,.045); }
+#applicationsTable tbody td, #searchResultsTable tbody td {
+  padding:15px 12px !important; border-top:1px solid #f3e7cf !important; border-bottom:1px solid #f3e7cf !important;
+  background:#fff !important; vertical-align:middle; white-space:nowrap;
+}
+#applicationsTable tbody tr:nth-child(even) td, #searchResultsTable tbody tr:nth-child(even) td { background:#fff9ed !important; }
+#applicationsTable tbody tr:hover td, #searchResultsTable tbody tr:hover td { background:#fff1c8 !important; }
+#applicationsTable tbody td:first-child, #searchResultsTable tbody td:first-child { border-left:1px solid #f3e7cf !important; border-radius:12px 0 0 12px; }
+#applicationsTable tbody td:last-child, #searchResultsTable tbody td:last-child { border-right:1px solid #f3e7cf !important; border-radius:0 12px 12px 0; }
+#applicationsTable tbody td:nth-child(2), #searchResultsTable tbody td:nth-child(2) { font-weight:750; color:#25202a; }
+#applicationsTable tbody td.user-actions, #searchResultsTable tbody td.user-actions { min-width:100px; }
+#applicationsTable .user-actions .btn, #searchResultsTable .user-actions .btn {
+  width:38px; height:35px; display:inline-flex; align-items:center; justify-content:center;
+  margin:0 3px 0 0 !important; padding:0 !important; border-radius:8px !important; font-size:.82rem;
+  box-shadow:0 3px 8px rgba(70,10,30,.12); transition:transform .15s ease, box-shadow .15s ease;
+}
+#applicationsTable .user-actions .edit-btn, #searchResultsTable .user-actions .edit-btn {
+  color:#fff !important; background:linear-gradient(135deg,#9b1744,#720d2d) !important; border:1px solid #a51b49 !important;
+}
+#applicationsTable .user-actions .delete-btn, #searchResultsTable .user-actions .delete-btn {
+  color:#fff !important; background:linear-gradient(135deg,#f04a58,#d9273b) !important; border:1px solid #df3547 !important;
+}
+#applicationsTable .user-actions .btn:hover, #searchResultsTable .user-actions .btn:hover { transform:translateY(-1px); box-shadow:0 5px 11px rgba(70,10,30,.2); }
+#searchResults { border-radius:15px; }
+@media(max-width:900px) {
+  #allApplicationsCard .card-body { padding:8px !important; }
+  #applicationsTable, #searchResultsTable { font-size:.82rem; }
+  #applicationsTable thead th, #searchResultsTable thead th,
+  #applicationsTable tbody td, #searchResultsTable tbody td { padding:11px 9px !important; }
+}
+@media(max-width:600px) {
+  #allApplicationsCard > .card-header { padding:12px !important; gap:8px; align-items:flex-start !important; }
+  #allApplicationsCard > .card-header h5 { font-size:1rem; }
+  #applicationsTable, #searchResultsTable { font-size:.78rem; }
+  #applicationsTable thead th, #searchResultsTable thead th { font-size:.76rem; }
+}
+</style>
+
+
+<style id="compact-delete-and-password-modals">
+/* Keep the original maroon/gold visual style while making these dialogs compact. */
+.secure-delete-modal .modal-dialog { max-width: 420px !important; }
+.secure-delete-card { border-radius: 17px !important; border-width: 2px !important; }
+.secure-delete-hero { height: 105px !important; }
+.secure-delete-hero::before { width: 150px !important; height: 70px !important; left: -45px !important; top: -35px !important; }
+.secure-delete-hero::after { width: 130px !important; height: 75px !important; right: -35px !important; bottom: -45px !important; }
+.secure-delete-orb { width: 56px !important; height: 56px !important; font-size: 23px !important; box-shadow: 0 0 0 7px rgba(138,21,56,.12), 0 0 0 13px rgba(138,21,56,.06), 0 7px 17px rgba(138,21,56,.22) !important; }
+.secure-delete-body { padding: 15px 18px 13px !important; }
+.secure-delete-body h2 { font-size: 21px !important; margin-bottom: 7px !important; }
+.secure-delete-body p { font-size: 14px !important; line-height: 1.4 !important; }
+.secure-delete-footer { gap: 9px !important; padding: 11px 16px 14px !important; }
+.secure-delete-btn { min-height: 39px !important; font-size: 13px !important; border-radius: 22px !important; }
+.secure-password-wrap { height: 43px !important; margin: 12px 0 3px !important; border-radius: 10px !important; border-width: 1.5px !important; }
+.secure-password-key { font-size: 14px !important; margin: 0 9px 0 11px !important; }
+.secure-password-input { font-size: 13px !important; }
+.secure-password-toggle { width: 38px !important; font-size: 14px !important; }
+.secure-delete-inline-error { min-height: 16px !important; font-size: 12px !important; }
+#changePasswordModal .modal-dialog { max-width: 400px !important; }
+#changePasswordModal .change-password-card { border-radius: 14px !important; }
+#changePasswordModal .modal-header { padding: 9px 13px !important; min-height: 0 !important; }
+#changePasswordModal .modal-title { font-size: 1rem !important; }
+#changePasswordModal .modal-body { padding: 13px 16px !important; }
+#changePasswordModal .modal-body .mb-3 { margin-bottom: 9px !important; }
+#changePasswordModal .form-label { font-size: 12px !important; margin-bottom: 4px !important; }
+#changePasswordModal .form-control { height: 36px !important; min-height: 36px !important; padding: 5px 9px !important; font-size: 13px !important; border-radius: 8px !important; }
+#changePasswordModal .password-help { font-size: 11px !important; }
+#changePasswordModal #changePasswordError { margin-top: 6px !important; }
+#changePasswordModal .modal-footer { padding: 9px 13px !important; gap: 7px !important; }
+#changePasswordModal .modal-footer .btn { padding: 6px 11px !important; font-size: 12px !important; border-radius: 7px !important; }
+@media (max-width: 576px) {
+  .secure-delete-modal .modal-dialog { margin: 10px auto !important; max-width: calc(100% - 24px) !important; }
+  .secure-delete-hero { height: 88px !important; }
+  .secure-delete-body { padding: 13px 14px 11px !important; }
+  .secure-delete-body h2 { font-size: 19px !important; }
+  .secure-delete-body p { font-size: 13px !important; }
+  .secure-delete-footer { padding: 10px 12px 12px !important; }
+  .secure-delete-btn { min-height: 37px !important; font-size: 12px !important; }
+  #changePasswordModal .modal-dialog { margin: 10px auto !important; max-width: calc(100% - 24px) !important; }
+}
+</style>
+
 </body>
 </html>
