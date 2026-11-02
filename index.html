@@ -1870,6 +1870,52 @@
 @media(max-width:1000px){.analytics-service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-topbar-premium .analytics-brand-mark{flex-basis:220px;width:220px}}
 @media(max-width:560px){.analytics-service-grid{grid-template-columns:1fr}.analytics-service-top{grid-template-columns:68px minmax(0,1fr) 30px}.analytics-service-logo{width:68px;height:62px}.analytics-topbar-premium .analytics-brand-mark{flex-basis:145px;width:145px;max-height:48px}}
 
+
+    /* Premium duplicate warning: elegant PNB maroon + gold, inside the active form only. */
+    .duplicate-modal-notice {
+      position:relative; isolation:isolate; z-index:8; display:flex; align-items:center; gap:16px;
+      margin:14px 18px 2px; padding:17px 54px 17px 17px; min-height:94px;
+      overflow:hidden; border:1px solid rgba(255,191,53,.95); border-left:6px solid #a20e37;
+      border-radius:18px; color:#fff;
+      background:linear-gradient(112deg,#650d2b 0%,#8a1538 48%,#a20e37 100%);
+      box-shadow:0 10px 26px rgba(83,8,34,.22), inset 0 1px 0 rgba(255,255,255,.2), 0 0 0 3px rgba(255,191,53,.12);
+      animation:duplicateNoticeIn .28s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .duplicate-modal-notice:before {
+      content:""; position:absolute; z-index:-1; right:-26px; top:-54px; width:210px; height:190px;
+      border:1px solid rgba(255,213,106,.32); border-radius:50%;
+      box-shadow:0 0 0 15px rgba(255,213,106,.055),0 0 0 31px rgba(255,213,106,.04);
+    }
+    .duplicate-modal-notice:after {
+      content:"SECURITY CHECK"; position:absolute; right:18px; bottom:8px; color:rgba(255,236,190,.45);
+      font-size:8px; font-weight:900; letter-spacing:2px; pointer-events:none;
+    }
+    .duplicate-notice-icon {
+      position:relative; flex:0 0 52px; width:52px; height:52px; display:grid; place-items:center;
+      border:1px solid rgba(255,255,255,.7); border-radius:16px; color:#6d102d;
+      background:linear-gradient(145deg,#fff4c6 0%,#ffc43d 100%);
+      box-shadow:0 5px 14px rgba(35,0,12,.25),inset 0 1px 0 #fff; font-size:23px;
+    }
+    .duplicate-notice-copy { position:relative; display:flex; flex-direction:column; gap:4px; min-width:0; padding-right:4px; }
+    .duplicate-notice-copy strong { display:flex; align-items:center; gap:7px; color:#ffe08a; font-size:15px; font-weight:900; letter-spacing:.25px; }
+    .duplicate-notice-copy strong:before { content:"!"; display:inline-grid; place-items:center; width:18px; height:18px; border-radius:50%; color:#72102f; background:#ffd56a; font-size:12px; font-weight:1000; }
+    .duplicate-notice-message { color:#fff; font-size:13px; line-height:1.45; font-weight:650; overflow-wrap:anywhere; }
+    .duplicate-notice-copy small { color:rgba(255,244,226,.82); font-size:11px; line-height:1.4; }
+    .duplicate-notice-close {
+      position:absolute; right:12px; top:12px; z-index:2; width:30px; height:30px;
+      display:grid; place-items:center; border:1px solid rgba(255,255,255,.28); border-radius:50%;
+      color:#fff; background:rgba(255,255,255,.12); cursor:pointer; transition:all .18s ease;
+    }
+    .duplicate-notice-close:hover { color:#71102f; background:#ffd56a; border-color:#ffd56a; transform:rotate(90deg); }
+    @keyframes duplicateNoticeIn { from { opacity:0; transform:translateY(-10px) scale(.985); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @media(max-width:576px) {
+      .duplicate-modal-notice { margin:10px 10px 2px; padding:13px 42px 14px 12px; gap:11px; min-height:82px; border-radius:14px; }
+      .duplicate-notice-icon { width:42px; height:42px; flex-basis:42px; border-radius:13px; font-size:19px; }
+      .duplicate-notice-copy strong { font-size:13px; }
+      .duplicate-notice-message { font-size:12px; }
+      .duplicate-notice-copy small { font-size:10px; }
+      .duplicate-modal-notice:after { font-size:7px; right:12px; bottom:5px; }
+    }
 </style>
 
 <style id="premium-all-service-forms">
@@ -3327,6 +3373,30 @@
         }
       };
 
+      // Show duplicate warnings INSIDE the active form modal (never behind it).
+      function showDuplicateNotice(message, modalInstance) {
+        const modalEl = modalInstance && modalInstance._element;
+        const content = modalEl && modalEl.querySelector('.modal-content');
+        if (!content) { showAlert(message, 'warning'); return; }
+        const oldNotice = content.querySelector('.duplicate-modal-notice');
+        if (oldNotice) oldNotice.remove();
+        const notice = document.createElement('div');
+        notice.className = 'duplicate-modal-notice';
+        notice.setAttribute('role', 'alert');
+        notice.innerHTML = `
+          <div class="duplicate-notice-icon"><i class="fas fa-shield-halved"></i></div>
+          <div class="duplicate-notice-copy">
+            <strong>Duplicate Entry Blocked</strong>
+            <span class="duplicate-notice-message"></span>
+            <small>Please check the saved record and use Edit to update it.</small>
+          </div>
+          <button type="button" class="duplicate-notice-close" aria-label="Close notice"><i class="fas fa-times"></i></button>`;
+        notice.querySelector('.duplicate-notice-message').textContent = message;
+        notice.querySelector('.duplicate-notice-close').addEventListener('click', () => notice.remove());
+        content.insertBefore(notice, content.firstChild);
+        notice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
       // Show alert function
       function showAlert(message, type = 'info') {
         if (!elements.alertsContainer) return;
@@ -3713,32 +3783,60 @@
         } catch (auditError) { console.warn('Customer activity could not be logged:', auditError); }
       }
 
-      // Save functions with validation
-      function saveApplication(formData, docId, modal) {
-        if (!db) {
-          showAlert('Firebase not connected', 'danger');
-          return;
+      // Prevent duplicate service records using each service's unique reference.
+      function duplicateKeyForService(data) {
+        const service = String(data.serviceType || '').toLowerCase();
+        const fields = {
+          epfo: ['pfNo'], aadhaar: ['aadhar'], pan: ['panNo', 'applicationNo'],
+          esarvish: ['applicationNo'], license: ['applicationNo'],
+          upcl: ['billNo'], passport: ['applicationNo'], pnb_account: ['account']
+        };
+        for (const field of (fields[service] || [])) {
+          const value = String(data[field] || '').replace(/\\s+/g, '').trim().toUpperCase();
+          if (value) return { field, value, service };
         }
-        
-        const savePromise = docId ? 
-          db.collection("applications").doc(docId).update(formData) :
-          db.collection("applications").add({
-            ...formData,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        
-        savePromise
-          .then(async (result) => {
-            await logCustomerActivity(docId ? 'EDIT' : 'ADD', formData, docId || (result && result.id), 'applications');
-            modal.hide();
-            loadAllCustomers();
-            loadServiceStats();
-            showAlert(docId ? 'Application updated successfully!' : 'Application saved successfully!', 'success');
-          })
-          .catch(error => {
-            console.error('Error saving application:', error);
-            showAlert('Error saving application. Please try again.', 'danger');
-          });
+        return null;
+      }
+
+      async function findDuplicateRecord(collectionName, formData, currentId) {
+        const key = duplicateKeyForService(formData);
+        if (!key) return null;
+        const snapshot = await db.collection(collectionName).get();
+        for (const doc of snapshot.docs) {
+          if (currentId && doc.id === currentId) continue;
+          const existing = doc.data() || {};
+          const service = collectionName === 'customers' ? 'pnb_account' : String(existing.serviceType || '').toLowerCase();
+          if (service !== key.service) continue;
+          let value = String(existing[key.field] || '').replace(/\\s+/g, '').trim().toUpperCase();
+          if (key.field === 'panNo' && !value) value = String(existing.applicationNo || '').replace(/\\s+/g, '').trim().toUpperCase();
+          if (value && value === key.value) return doc;
+        }
+        return null;
+      }
+
+      // Save functions with duplicate validation
+      async function saveApplication(formData, docId, modal) {
+        if (!db) { showAlert('Firebase not connected', 'danger'); return; }
+        try {
+          const duplicate = await findDuplicateRecord('applications', formData, docId);
+          if (duplicate) {
+            showDuplicateNotice('This ' + String(formData.serviceType || 'service').toUpperCase() +
+              ' record already exists with the same unique number.', modal);
+            return;
+          }
+          const result = docId
+            ? await db.collection('applications').doc(docId).update(formData)
+            : await db.collection('applications').add({ ...formData, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+          await logCustomerActivity(docId ? 'EDIT' : 'ADD', formData, docId || (result && result.id), 'applications');
+          modal.hide();
+          await loadFastCustomerData();
+          loadAllCustomers();
+          loadServiceStats();
+          showAlert(docId ? 'Application updated successfully!' : 'Application saved successfully!', 'success');
+        } catch (error) {
+          console.error('Error saving application:', error);
+          showAlert('Error saving application. Please try again.', 'danger');
+        }
       }
 
       // Save button listeners
@@ -3976,25 +4074,27 @@
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         };
         
-        const savePromise = appId ? 
-          db.collection("customers").doc(appId).update(formData) :
-          db.collection("customers").add({
-            ...formData,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        
-        savePromise
-          .then(async (result) => {
+        (async () => {
+          try {
+            const duplicate = await findDuplicateRecord('customers', formData, appId);
+            if (duplicate) {
+              showDuplicateNotice('This PNB account number is already saved.', pnbAccountModal);
+              return;
+            }
+            const result = appId
+              ? await db.collection('customers').doc(appId).update(formData)
+              : await db.collection('customers').add({ ...formData, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
             await logCustomerActivity(appId ? 'EDIT' : 'ADD', formData, appId || (result && result.id), 'customers');
             pnbAccountModal.hide();
+            await loadFastCustomerData();
             loadAllCustomers();
             loadServiceStats();
             showAlert(appId ? 'Customer updated successfully!' : 'Customer saved successfully!', 'success');
-          })
-          .catch(error => {
+          } catch (error) {
             console.error('Error saving customer:', error);
             showAlert('Error saving customer. Please try again.', 'danger');
-          });
+          }
+        })();
       });
 
       // FAST Firebase data loader
